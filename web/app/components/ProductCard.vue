@@ -23,15 +23,24 @@
     <div class="content">
       <sl-tooltip
         v-if="product.computedIsAvailable === false"
-        content="Gerade nicht verfügbar"
+        :content="t('not_available')"
         distance="0"
       >
         <AvailabilityCircle class="availability-circle" :available="false" />
       </sl-tooltip>
       <slot>
-        <p class="name">
-          {{ product.name }}
-        </p>
+        <div class="text">
+          <p class="name">
+            {{ product.name }}
+          </p>
+          <p
+            v-if="locationName"
+            class="location-name"
+            :data-testid="`product-card-location-${product.id}`"
+          >
+            {{ locationName }}
+          </p>
+        </div>
       </slot>
     </div>
   </component>
@@ -47,7 +56,7 @@ if (process.client) {
   await import("@shoelace-style/shoelace/dist/components/tooltip/tooltip.js");
 }
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "local" });
 
 /**
  * Native attributes (e.g. `@click`) which fall through to the root element.
@@ -60,6 +69,8 @@ interface Props extends /* @vue-ignore */ NativeAttributes {
   to?: string;
   href?: string;
   spacing?: "sm" | "md";
+  /** Shown under the product name, e.g. in results across locations */
+  locationName?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), { spacing: "md" });
@@ -127,4 +138,29 @@ const component = computed(() => {
 .availability-circle {
   margin-right: 0.5rem;
 }
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.location-name {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-color-light);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 </style>
+
+<i18n lang="json">
+{
+  "en": {
+    "not_available": "Currently not available"
+  },
+  "de": {
+    "not_available": "Gerade nicht verfügbar"
+  }
+}
+</i18n>

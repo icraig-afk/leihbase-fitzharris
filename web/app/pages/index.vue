@@ -12,6 +12,19 @@
       </div>
 
       <div v-if="locations && locations.length > 0" class="locations lb-stack">
+        <form class="search" role="search" @submit.prevent="handleSearch">
+          <Input
+            id="home-search-input"
+            :label="t('search_label')"
+            hide-label
+            :placeholder="`${t('search_label')}...`"
+            v-model="query"
+            data-testid="home-search-input"
+          />
+          <Button type="submit" data-testid="home-search-submit">
+            {{ t("search") }}
+          </Button>
+        </form>
         <Heading is="h2" size="lg" class="heading">{{
           t("locations")
         }}</Heading>
@@ -45,6 +58,7 @@
 import Button from "@/components/core/Button.vue";
 import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
+import Input from "@/components/core/Input.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 
 const config = useRuntimeConfig();
@@ -65,6 +79,13 @@ if (locations.length === 1) {
   await navigateTo({
     path: `/l/${locations[0].slug}`,
   });
+}
+
+// Search the products of all locations
+const query = ref("");
+function handleSearch() {
+  const value = query.value.trim();
+  navigateTo({ path: "/search", query: value ? { query: value } : {} });
 }
 
 useHead({
@@ -128,6 +149,11 @@ useHead({
 .locations .heading {
   margin-top: 0.5rem;
 }
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--fluid-spacing-4);
+}
 .locations ul {
   display: flex;
   flex-direction: column;
@@ -147,10 +173,14 @@ useHead({
 <i18n lang="json">
 {
   "en": {
-    "locations": "Locations"
+    "locations": "Locations",
+    "search_label": "Search all locations",
+    "search": "Search"
   },
   "de": {
-    "locations": "Standorte"
+    "locations": "Standorte",
+    "search_label": "Alle Standorte durchsuchen",
+    "search": "Suchen"
   }
 }
 </i18n>
