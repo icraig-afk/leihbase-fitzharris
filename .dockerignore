@@ -6,6 +6,7 @@ node_modules
 Dockerfile.dev
 docker-compose.dev.yaml
 docker-compose.yaml
+docker-compose.local.yaml
 
 web/.nuxt
 web/.output

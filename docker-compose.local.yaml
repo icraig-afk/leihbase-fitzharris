@@ -1,0 +1,12 @@
+# Local additions, not for public deployments. Start with:
+#   docker compose -f docker-compose.yaml -f docker-compose.local.yaml up --build
+#
+# In PocketBase (Settings > Mail settings) use SMTP host "mailpit", port 1025.
+# Sent email can be read at http://localhost:8025
+services:
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "127.0.0.1:8025:8025"
+    networks:
+      - leihbar

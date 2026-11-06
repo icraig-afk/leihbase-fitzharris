@@ -40,9 +40,12 @@ services:
       CONFIG_CAP_SITE_KEY: ""
       CONFIG_CAP_SECRET_KEY: ""
     volumes:
-      - ./pocketbase/pb_data:/pb/pb_data
+      - pb_data:/pb/pb_data
     networks:
       - leihbar
 
 networks:
   leihbar:
+
+volumes:
+  pb_data:
