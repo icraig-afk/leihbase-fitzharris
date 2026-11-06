@@ -21,7 +21,7 @@
             "
             :class="{ active: categoryId === category.id }"
           >
-            {{ category.name_de }}
+            {{ getCategoryName(category) }}
           </NuxtLink>
         </li>
       </ul>
@@ -36,7 +36,12 @@
       <template v-for="product in products" :key="product.id">
         <ProductCard
           :product="product"
-          :to="`/l/${props.location.slug}/p/${product.id}`"
+          :to="getProductUrl(product)"
+          :location-name="
+            props.location
+              ? undefined
+              : locationsById.get(product.location)?.name
+          "
           class="product"
         />
       </template>
@@ -71,23 +76,59 @@
 <script lang="ts" setup>
 import { ArrowLeft, ArrowRight, NavArrowDown } from "@iconoir/vue";
 import type { Location } from "~~/models/location";
+import type { RecordModel } from "pocketbase";
 import type { LocationQueryValue } from "vue-router";
 import Button from "../core/Button.vue";
 import Heading from "../core/Heading.vue";
 import Input from "../core/Input.vue";
 import ProductCard from "../ProductCard.vue";
 
-const { t } = useI18n({
+const { t, locale } = useI18n({
   useScope: "local",
 });
 
 const props = defineProps<{
   title?: string;
-  location: Location;
+  /** Show the products of this location only */
+  location?: Location;
+  /**
+   * Without `location`: show the products of all these locations, e.g. all
+   * active public locations
+   */
+  locations?: Location[];
+  /**
+   * Path the grid's own links (search, category, paging) point to, defaults
+   * to the location page
+   */
+  basePath?: string;
 }>();
 
 const { pb } = usePocketbase();
 const route = useRoute();
+
+const locationsById = computed(
+  () => new Map((props.locations ?? []).map((l) => [l.id, l]))
+);
+
+// Separate cache keys per mode, so a location page and the search page don't
+// share data
+const cacheKey = props.location?.id ?? "all";
+
+/**
+ * Returns the category name in the current locale, falling back to German
+ */
+function getCategoryName(category: RecordModel): string {
+  return category[`name_${locale.value}`] || category.name_de;
+}
+
+/**
+ * Returns the URL of the product page, on the location the product belongs to
+ */
+function getProductUrl(product: RecordModel): string {
+  const slug =
+    props.location?.slug ?? locationsById.value.get(product.location)?.slug;
+  return slug ? `/l/${slug}/p/${product.id}` : `/link/product/${product.id}`;
+}
 
 /**
  * Returns the first value of a query parameter, which can occur multiple times
@@ -129,12 +170,16 @@ watch(
   }
 );
 
-const { data: categories } = await useAsyncData("categories", () =>
-  pb.collection("categories").getFullList({ sort: "name_de" })
+const { data: categories } = await useAsyncData(
+  `categories-${cacheKey}`,
+  () =>
+    pb.collection("categories").getFullList({
+      sort: locale.value === "en" ? "name_en" : "name_de",
+    })
 );
 
 const { data: productsData, refresh: refreshProducts } = await useAsyncData(
-  "products",
+  `products-${cacheKey}`,
   () =>
     pb.collection("products").getList(parseInt(page.value ?? "0"), 24, {
       filter: getFilter(),
@@ -166,6 +211,19 @@ function getFilter() {
   if (props.location && props.location.id) {
     filter.push("location = {:location}");
     args.location = props.location.id;
+  } else {
+    // Limit to the given locations, by id: filtering on the location relation
+    // (e.g. `location.active = true`) isn't possible for visitors, as the
+    // location collection is only listable by managers
+    const locationIds = [...locationsById.value.keys()];
+    if (locationIds.length === 0) {
+      filter.push('id = ""');
+    } else {
+      filter.push(
+        `(${locationIds.map((_, i) => `location = {:location${i}}`).join(" || ")})`
+      );
+      locationIds.forEach((id, i) => (args[`location${i}`] = id));
+    }
   }
   if (categoryId.value) {
     filter.push("categories ~ {:category}");
@@ -179,7 +237,9 @@ function getFilter() {
 }
 
 function getUrl(overwrites: Record<string, string | number | null>) {
-  const url = new URL(`https://example.com/l/${props.location.slug}`);
+  const url = new URL(
+    `https://example.com${props.basePath ?? `/l/${props.location?.slug}`}`
+  );
   if (categoryId.value) {
     url.searchParams.set("category", categoryId.value);
   }
