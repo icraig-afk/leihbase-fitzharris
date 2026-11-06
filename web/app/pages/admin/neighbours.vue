@@ -63,10 +63,7 @@
               </td>
               <td>
                 <template v-if="item.street">
-                  {{ item.house_number }} {{ item.street }}
-                  <template v-if="item.address_extra"
-                    >, {{ item.address_extra }}</template
-                  >
+                  {{ formatAddress(item) }}
                 </template>
                 <em v-else>{{ t("no_address") }}</em>
               </td>
@@ -186,6 +183,12 @@ function formatDate(value: string) {
   });
 }
 
+function formatAddress(item: PendingUser) {
+  return [`${item.house_number} ${item.street}`, item.address_extra]
+    .filter(Boolean)
+    .join(", ");
+}
+
 async function issue(item: PendingUser) {
   if (
     item.code_issued &&
@@ -277,6 +280,9 @@ table {
   .sender {
     text-align: right;
     font-weight: bold;
+  }
+  .letter p {
+    margin: 0 0 0.4cm;
   }
   address {
     font-style: normal;

@@ -35,6 +35,7 @@
         <template v-if="leihbase.address_verification">
           <p class="address-info">{{ t("address_info") }}</p>
           <Select
+            v-model="street"
             name="street"
             :label="t('street')"
             data-testid="street-select"
@@ -138,6 +139,9 @@ const {
 
 const signupError = ref<string>();
 const loading = ref(false);
+
+// Selected street, empty to show the placeholder option
+const street = ref("");
 
 // Streets users can sign up from, when neighbour verification is enabled
 const { data: streets } = await useAsyncData("signup-streets", () =>
@@ -300,7 +304,7 @@ fieldset.checkbox {
     "street": "Street",
     "street_placeholder": "Choose your street",
     "house_number": "House number",
-    "address_extra": "Flat or unit (optional)",
+    "address_extra": "Flat or unit",
 
     "errors": {
       "address_required": "Please choose your street and enter your house number.",
@@ -328,7 +332,7 @@ fieldset.checkbox {
     "street": "Straße",
     "street_placeholder": "Wähle deine Straße",
     "house_number": "Hausnummer",
-    "address_extra": "Wohnung (optional)",
+    "address_extra": "Wohnung",
     "errors": {
       "address_required": "Bitte wähle deine Straße und gib deine Hausnummer ein.",
       "street_not_allowed": "Die Registrierung ist nur für die aufgeführten Straßen möglich.",
