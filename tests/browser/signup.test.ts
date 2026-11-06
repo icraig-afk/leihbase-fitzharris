@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { TEST_STREET } from "../lib/user";
 import { uniqueId, waitForClientMount, waitForHydration } from "../lib/utils";
 
 test.describe("signup", () => {
@@ -22,6 +23,10 @@ test.describe("signup", () => {
       .getByTestId("email-input")
       .fill(`john-${uniqueId()}@example.com`);
     await page.getByTestId("password-input").fill("123456789");
+    await page
+      .getByTestId("street-select")
+      .selectOption({ label: TEST_STREET });
+    await page.getByTestId("house-number-input").fill("12");
     await page.getByTestId("tac-checkbox").check();
     await page.getByTestId("submit-button").click();
     await expect(page.getByTestId("signup-error")).toHaveCount(0);

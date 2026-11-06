@@ -15,6 +15,16 @@
       {{ t("success_signup_with_intent") }}
     </span>
   </Alert>
+  <Alert
+    v-else-if="type === PageAlertType.AFTER_SIGNUP_ADDRESS_VERIFICATION"
+    data-testid="alert-after-signup-address"
+  >
+    <span>
+      <strong>{{ t("success_signup_with_intent_bold") }}</strong>
+      <br />
+      {{ t("success_signup_address") }}
+    </span>
+  </Alert>
   <Alert v-else-if="type === PageAlertType.AFTER_LOGOUT" variant="info">
     {{ t("success_logout") }}
   </Alert>
@@ -57,6 +67,7 @@ if (userStore.banner) {
     "success_signup": "Signed up successfully! A confirmation e-mail has been sent to your e-mail address.",
     "success_signup_with_intent_bold": "Signed up successfully! A confirmation e-mail has been sent to your e-mail address.",
     "success_signup_with_intent": "Reserve the product after confirming your e-mail address.",
+    "success_signup_address": "We'll post a code to your address. Once it arrives, enter it on your profile to start reserving.",
     "success_logout": "You are logged out."
   },
   "de": {
@@ -65,6 +76,7 @@ if (userStore.banner) {
     "success_signup": "Erfolgreich registriert! Eine Bestätigungs-E-Mail wurde an deine E-Mail-Adresse gesendet.",
     "success_signup_with_intent_bold": "Erfolgreich registriert! Eine Bestätigungs-E-Mail wurde an deine E-Mail-Adresse gesendet.",
     "success_signup_with_intent": "Reserviere den Gegenstand, nachdem du deine E-Mail-Adresse bestätigt hast.",
+    "success_signup_address": "Wir schicken dir einen Code per Post. Sobald er da ist, gib ihn in deinem Profil ein, um zu reservieren.",
     "success_logout": "Du bist abgemeldet."
   }
 }

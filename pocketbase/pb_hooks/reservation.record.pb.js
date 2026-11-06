@@ -39,6 +39,22 @@ onRecordCreateRequest((e) => {
     throw new BadRequestError("User_not_verified.");
   }
 
+  // Require a verified address (posted code), if neighbour verification is
+  // enabled
+  /** @type {typeof import('./lib/addressVerification')} */
+  const { isEnabled: isAddressVerificationEnabled } = require(
+    `${__hooks}/lib/addressVerification`
+  );
+  if (
+    isAddressVerificationEnabled() &&
+    !isSuperuser &&
+    !isAdmin &&
+    !isLocationUser &&
+    !requestUser.getBool("address_verified")
+  ) {
+    throw new BadRequestError("User_address_not_verified.");
+  }
+
   // If reservation system is disabled, prevent reservations from regular users
   if (
     location.get("reservation_system") === "disabled" &&

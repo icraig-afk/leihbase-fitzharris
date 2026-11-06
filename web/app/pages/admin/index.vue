@@ -4,6 +4,13 @@
     <div class="grid">
       <div class="lb-stack">
         <Heading is="h1" size="xl">Admin</Heading>
+        <Button
+          v-if="userStore.isAdmin && leihbase.address_verification"
+          variant="secondary"
+          to="/admin/neighbours"
+        >
+          {{ t("neighbours") }}
+        </Button>
         <Heading is="h2" size="lg" class="heading">
           {{ t("locations") }}
         </Heading>
@@ -43,6 +50,7 @@ import PageAlert from "@/components/page-alert/PageAlert.vue";
 import type { Location } from "~~/models/location";
 
 const { leihbase } = useLeihbase();
+const userStore = useUserStore();
 
 useHead({
   title: `Admin | ${leihbase.name}`,
@@ -132,12 +140,14 @@ if (!locations.value || locations.value.length === 0) {
   "en": {
     "locations": "Locations",
     "active": "Active",
-    "inactive": "Inactive"
+    "inactive": "Inactive",
+    "neighbours": "Neighbour verification"
   },
   "de": {
     "locations": "Standorte",
     "active": "Aktiv",
-    "inactive": "Inaktiv"
+    "inactive": "Inaktiv",
+    "neighbours": "Nachbarschaftsprüfung"
   }
 }
 </i18n>
