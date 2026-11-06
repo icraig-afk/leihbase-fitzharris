@@ -1,6 +1,6 @@
 import { expect, test as setup } from "@playwright/test";
 import { ClientResponseError } from "pocketbase";
-import { createUser } from "../lib/user";
+import { createUser, TEST_STREET } from "../lib/user";
 import { pocketbase } from "../services/pocketbase";
 
 setup.describe.configure({ mode: "serial" });
@@ -23,6 +23,8 @@ setup.describe("setup", () => {
     try {
       await pb.collection("leihbase").create({
         name: "Leihbase",
+        // The suite runs with neighbour verification enabled
+        address_verification: true,
         privacy_policy_link: "https://example.com",
         footer_links: [
           {
@@ -38,6 +40,21 @@ setup.describe("setup", () => {
     } catch (err) {
       console.log(
         "Error creating leihbase record",
+        err instanceof ClientResponseError ? err.response.data : err
+      );
+    }
+
+    // Create the street test users live on
+    try {
+      await pb.collection("streets").create({
+        name: TEST_STREET,
+        postcode: "AB1 2CD",
+        town: "Testtown",
+        active: true,
+      });
+    } catch (err) {
+      console.log(
+        "Error creating test street",
         err instanceof ClientResponseError ? err.response.data : err
       );
     }

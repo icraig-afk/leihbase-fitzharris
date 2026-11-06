@@ -44,6 +44,59 @@ onRecordCreateRequest((e) => {
     record.set("role", "user");
   }
 
+  // Neighbour verification: require one of the allowed streets, the address
+  // is then verified with a code sent by post
+  /** @type {typeof import('./lib/addressVerification')} */
+  const { isEnabled } = require(`${__hooks}/lib/addressVerification`);
+  if (isEnabled()) {
+    if (!isSuperuser) {
+      if (
+        !record.getString("street") ||
+        !record.getString("house_number").trim()
+      ) {
+        throw new BadRequestError("Address_required.");
+      }
+      let street;
+      try {
+        street = $app.findRecordById("streets", record.getString("street"));
+      } catch (_) {
+        street = null;
+      }
+      if (!street || !street.getBool("active")) {
+        throw new BadRequestError("Street_not_allowed.");
+      }
+      record.set("address_verified", false);
+    }
+  } else if (
+    !isSuperuser ||
+    requestInfo().body["address_verified"] === undefined
+  ) {
+    // Users signing up while the feature is disabled don't need a code later
+    record.set("address_verified", true);
+  }
+
+  e.next();
+}, "users");
+
+onRecordUpdateRequest((e) => {
+  const { record } = e;
+  if (!record) {
+    throw new BadRequestError();
+  }
+
+  // Once verified, the address can only be changed by a superuser
+  const original = record.original();
+  const addressChanged = ["street", "house_number", "address_extra"].some(
+    (field) => record.getString(field) !== original.getString(field)
+  );
+  if (
+    !e.hasSuperuserAuth() &&
+    original.getBool("address_verified") &&
+    addressChanged
+  ) {
+    throw new BadRequestError("Address_locked.");
+  }
+
   e.next();
 }, "users");
 
@@ -57,6 +110,8 @@ onRecordEnrich((e) => {
   ) {
     e.record.unhide("role");
     e.record.unhide("manager_locations");
+    e.record.unhide("address_verified");
+    e.record.unhide("address_verified_at");
   }
 
   e.next();

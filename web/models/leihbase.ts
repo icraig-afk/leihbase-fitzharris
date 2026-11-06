@@ -11,4 +11,9 @@ export type Leihbase = RecordModel & {
     link: string;
   }[];
   style?: string;
+  /**
+   * Only allow sign-ups from the listed streets, and require a code sent by
+   * post before reserving
+   */
+  address_verification?: boolean;
 };

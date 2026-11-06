@@ -220,6 +220,11 @@ async function onSubmit() {
         case "User_not_verified.":
           reservationCreationError.value = t("errors.user_not_verified");
           break;
+        case "User_address_not_verified.":
+          reservationCreationError.value = t(
+            "errors.user_address_not_verified"
+          );
+          break;
         case "Product_has_open_reservation.":
           reservationCreationError.value = t(
             "errors.product_has_open_reservation",
@@ -320,6 +325,7 @@ async function onSubmit() {
     "allows_reservations_up_to_days": "allows reservations up to {days} days.",
     "errors": {
       "user_not_verified": "Confirm your e-mail address before placing a reservation.",
+      "user_address_not_verified": "Confirm your address with the code from your letter before placing a reservation.",
       "product_has_open_reservation": "This product is currently not available.",
       "user_has_open_reservation": "You have an open reservation for this product. Reach out on {email} to extend or change your reservation.",
       "date_range_too_long": "Products can't be reserved for longer than {days} days. Reach out on {email} to discuss a longer period.",
@@ -345,6 +351,7 @@ async function onSubmit() {
     "allows_reservations_up_to_days": "erlaubt Reservierungen von bis zu {days} Tagen.",
     "errors": {
       "user_not_verified": "Bestätige deine E-Mail-Adresse, bevor du reservierst.",
+      "user_address_not_verified": "Bestätige deine Adresse mit dem Code aus deinem Brief, bevor du reservierst.",
       "product_has_open_reservation": "Diesen Gegenstand ist derzeit nicht verfügbar.",
       "user_has_open_reservation": "Du hast diesen Gegenstand bereits reserviert. Wenn du deine Reservierung verlängern oder ändern möchtest, schreibe eine Mail an {email}.",
       "date_range_too_long": "Produkte können nicht länger als {days} Tage reserviert werden. Kontaktiere uns unter {email}, um einen längeren Zeitraum zu besprechen.",

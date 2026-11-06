@@ -36,6 +36,14 @@
     >
       {{ t("settings") }}
     </Button>
+    <Button
+      v-if="userStore.isAdmin && leihbase?.address_verification"
+      variant="secondary"
+      to="/admin/neighbours"
+      data-testid="admin-nav-neighbours"
+    >
+      {{ t("neighbours") }}
+    </Button>
   </HorizontalScroll>
 </template>
 
@@ -45,6 +53,7 @@ import HorizontalScroll from "@/components/core/HorizontalScroll.vue";
 import type { RecordModel } from "pocketbase";
 
 const userStore = useUserStore();
+const { leihbase } = useLeihbase();
 
 const { t } = useI18n({
   useScope: "local",
@@ -91,7 +100,8 @@ function isActive(page: string) {
     "statistics": "Statistics",
     "opening_hours": "Opening hours",
     "settings": "Settings",
-    "email_templates": "Email Templates"
+    "email_templates": "Email Templates",
+    "neighbours": "Neighbours"
   },
   "de": {
     "reservations": "Reservierungen",
@@ -99,7 +109,8 @@ function isActive(page: string) {
     "statistics": "Statistieken",
     "opening_hours": "Öffnungszeiten",
     "settings": "Einstellungen",
-    "email_templates": "E-Mail-Vorlagen"
+    "email_templates": "E-Mail-Vorlagen",
+    "neighbours": "Nachbarschaft"
   }
 }
 </i18n>

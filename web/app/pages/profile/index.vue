@@ -17,6 +17,18 @@
           >.
         </span>
       </Alert>
+      <Alert
+        v-if="leihbase?.address_verification && !user?.address_verified"
+        variant="warning"
+        size="sm"
+        data-testid="address-unverified-alert"
+      >
+        <span>
+          {{ t("address_unverified") }}
+          <Link to="/profile/verify-address">{{ t("enter_code") }}</Link
+          >.
+        </span>
+      </Alert>
       <Divider spacing="md" />
       <p>
         <!-- <Link href="/profile/change-email">{{ t("change_email") }}</Link> -->
@@ -39,6 +51,7 @@ import Link from "@/components/core/Link.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 
 const { isValid, user, logout } = usePocketbase();
+const { leihbase } = useLeihbase();
 const userStore = useUserStore();
 const { t } = useI18n({
   useScope: "local",
@@ -79,6 +92,8 @@ p:last-child {
     "password": "Password",
     "unverified": "Your email address hasn't been confirmed yet.",
     "more_info": "More info",
+    "address_unverified": "Your address hasn't been confirmed yet. We'll post you a letter with a code.",
+    "enter_code": "Enter your code",
     "change_email": "Update e-mail",
     "change_password": "Update password",
     "logout": "Logout"
@@ -91,6 +106,8 @@ p:last-child {
     "password": "Passwort",
     "unverified": "Deine E-Mail-Adresse wurde noch nicht bestätigt.",
     "more_info": "Mehr Infos",
+    "address_unverified": "Deine Adresse wurde noch nicht bestätigt. Wir schicken dir einen Brief mit einem Code.",
+    "enter_code": "Code eingeben",
     "change_email": "E-Mail Address ändern",
     "change_password": "Passwort ändern",
     "logout": "Ausloggen"

@@ -10,12 +10,14 @@
     </div>
     <ReservationDialog />
     <VerificationDialog />
+    <AddressVerificationDialog />
   </IconoirProvider>
 </template>
 
 <script lang="ts" setup>
 import "@/assets/styles/main.scss";
 import "@shoelace-style/shoelace/dist/themes/light.css";
+import AddressVerificationDialog from "@/components/AddressVerificationDialog.vue";
 import { useLeihbase } from "@/stores/leihbase";
 import { useUserStore } from "@/stores/user";
 import { IconoirProvider } from "@iconoir/vue";

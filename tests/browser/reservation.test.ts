@@ -6,7 +6,7 @@ import {
   navigateToProductPage,
   updateLastProductReservation,
 } from "../lib/product";
-import { createUser } from "../lib/user";
+import { createUser, TEST_STREET } from "../lib/user";
 import { uniqueId, waitForClientMount } from "../lib/utils";
 import { pocketbase } from "../services/pocketbase";
 
@@ -76,16 +76,22 @@ test.describe("reservation", () => {
     await page.getByTestId("name-input").fill("John2");
     await page.getByTestId("email-input").fill(email);
     await page.getByTestId("password-input").fill(password);
+    await page
+      .getByTestId("street-select")
+      .selectOption({ label: TEST_STREET });
+    await page.getByTestId("house-number-input").fill("5");
     await page.getByTestId("tac-checkbox").check();
     await page.getByTestId("submit-button").click();
     await page.waitForURL(/\/l\/test-store\/p\/(.+)/);
 
-    // Set user as verified
+    // Set user's email and address as verified
     const pb = await pocketbase();
     const user = await pb
       .collection("users")
       .getFirstListItem(`email="${email}"`);
-    await pb.collection("users").update(user.id, { verified: true });
+    await pb
+      .collection("users")
+      .update(user.id, { verified: true, address_verified: true });
 
     // Reserve
     await expect(page.url()).toContain("/l/test-store/p/");

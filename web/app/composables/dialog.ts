@@ -9,6 +9,9 @@ export const useReservationDialog = function () {
   const { pb, user } = usePocketbase();
   const userStore = useUserStore();
   const { open: openVerificationDialog } = useVerificationDialog();
+  const { open: openAddressVerificationDialog } =
+    useAddressVerificationDialog();
+  const { leihbase } = useLeihbase();
 
   async function open(_location: Location, _product: Product) {
     // Check authentication status
@@ -30,6 +33,20 @@ export const useReservationDialog = function () {
       return;
     }
 
+    // Check address verification (code sent by post), managers and admins
+    // can always reserve
+    if (
+      leihbase.address_verification &&
+      user.value?.role === "user" &&
+      !user.value?.address_verified
+    ) {
+      await pb.collection("users").authRefresh();
+      if (!user.value?.address_verified) {
+        openAddressVerificationDialog();
+        return;
+      }
+    }
+
     // Open reservation dialog
     isOpen.value = true;
     product.value = _product;
@@ -41,6 +58,22 @@ export const useReservationDialog = function () {
     isOpen,
     product,
     location,
+  };
+};
+
+export const useAddressVerificationDialog = function () {
+  const isOpen = useState<boolean | undefined>(
+    "address-verification-dialog",
+    () => false
+  );
+
+  function open() {
+    isOpen.value = true;
+  }
+
+  return {
+    open,
+    isOpen,
   };
 };
 
