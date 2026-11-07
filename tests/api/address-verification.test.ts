@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import PocketBase, { ClientResponseError } from "pocketbase";
+import { waitForMail } from "../lib/mail";
 import { createProduct } from "../lib/product";
 import { createUser, DEFAULT_PASSWORD, getTestStreetId } from "../lib/user";
 import { getFutureDate, uniqueId } from "../lib/utils";
@@ -105,6 +106,22 @@ test.describe("address verification", () => {
         (await pb.collection("users").getOne(user.id)).address_verified
       ).toBe(false);
     });
+  });
+
+  test("admins are emailed about a new neighbour", async () => {
+    const admin = await createUser(undefined, undefined, "admin");
+    const name = `Neighbour ${uniqueId()}`;
+    await signup({
+      name,
+      street: await getTestStreetId(),
+      house_number: "7",
+    });
+    const mail = await waitForMail(admin.email, name);
+    expect(mail.Subject).toBe(`New neighbour needs a code: ${name}`);
+    expect(mail.HTML).toContain("7 Test Street");
+    expect(mail.HTML).toContain("/admin/neighbours");
+    // Superusers are notified too
+    await waitForMail("test@example.com", name);
   });
 
   test("unverified neighbour can't reserve", async () => {

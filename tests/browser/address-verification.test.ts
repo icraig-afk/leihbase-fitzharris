@@ -3,8 +3,34 @@ import { login } from "../lib/login";
 import { createProduct, navigateToProductPage } from "../lib/product";
 import { createUser, DEFAULT_PASSWORD } from "../lib/user";
 import { waitForClientMount, waitForHydration } from "../lib/utils";
+import { pocketbase } from "../services/pocketbase";
 
 test.describe("address verification", () => {
+  test("neighbours page has the admin tabs to navigate back", async ({
+    page,
+  }) => {
+    const pb = await pocketbase();
+    const location = await pb
+      .collection("location")
+      .getFirstListItem('slug = "test-store"');
+    const admin = await createUser(undefined, undefined, "admin", [
+      location.id,
+    ]);
+    await login(page, admin.email, DEFAULT_PASSWORD);
+
+    await page.goto("/admin/test-store");
+    await waitForHydration(page);
+    await page.getByTestId("admin-nav-neighbours").click();
+    await page.waitForURL(/\/admin\/neighbours\?location=test-store/);
+    await expect(page.getByTestId("admin-nav-neighbours")).toHaveClass(
+      /active/
+    );
+
+    // Back to another tab of the location
+    await page.getByTestId("admin-nav-products").click();
+    await page.waitForURL(/\/admin\/test-store\/products/);
+  });
+
   test("admin posts a code, neighbour enters it and can reserve", async ({
     page,
   }) => {

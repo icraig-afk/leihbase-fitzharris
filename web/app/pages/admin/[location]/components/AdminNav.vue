@@ -11,6 +11,7 @@
       variant="secondary"
       :to="`/admin/${location?.slug}/products`"
       :active="isActive('products')"
+      data-testid="admin-nav-products"
     >
       {{ t("products") }}
     </Button>
@@ -33,13 +34,15 @@
       variant="secondary"
       :to="`/admin/${location?.slug}/settings`"
       :active="isActive('settings') || isActive('email-templates')"
+      data-testid="admin-nav-settings"
     >
       {{ t("settings") }}
     </Button>
     <Button
       v-if="userStore.isAdmin && leihbase?.address_verification"
       variant="secondary"
-      to="/admin/neighbours"
+      :to="`/admin/neighbours?location=${location?.slug}`"
+      :active="route.path.startsWith('/admin/neighbours')"
       data-testid="admin-nav-neighbours"
     >
       {{ t("neighbours") }}
