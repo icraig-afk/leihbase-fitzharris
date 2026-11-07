@@ -76,6 +76,24 @@ onRecordCreateRequest((e) => {
   }
 
   e.next();
+
+  // Let admins know a letter with a code needs to be printed and posted.
+  // A failing mail server must not fail the sign-up.
+  if (
+    isEnabled() &&
+    record.getString("role") === "user" &&
+    !record.getBool("address_verified")
+  ) {
+    try {
+      /** @type {typeof import('./lib/addressVerification')} */
+      const { notifyAdminsOfNewNeighbour } = require(
+        `${__hooks}/lib/addressVerification`
+      );
+      notifyAdminsOfNewNeighbour(record);
+    } catch (err) {
+      console.error("[address-verification] Failed to notify admins:", err);
+    }
+  }
 }, "users");
 
 onRecordUpdateRequest((e) => {

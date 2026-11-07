@@ -1,8 +1,11 @@
 <template>
   <Container width="lg" centered>
     <div class="screen lb-stack">
+      <!-- Admin tabs of the location the admin came from -->
+      <AdminNav v-if="location" :location="location" />
       <header>
-        <Heading is="h1" size="xl" data-testid="neighbours-h1">
+        <AdminHeader v-if="location" :title="t('title')" :location="location" />
+        <Heading v-else is="h1" size="xl" data-testid="neighbours-h1">
           {{ t("title") }}
         </Heading>
         <p>{{ t("text") }}</p>
@@ -120,7 +123,10 @@ import Card from "@/components/core/Card.vue";
 import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import LoadingSpinner from "@/components/core/LoadingSpinner.vue";
+import type { Location } from "~~/models/location";
 import { ClientResponseError } from "pocketbase";
+import AdminHeader from "./[location]/components/AdminHeader.vue";
+import AdminNav from "./[location]/components/AdminNav.vue";
 
 type PendingUser = {
   id: string;
@@ -153,6 +159,18 @@ if (!isValid.value) {
 if (!userStore.isAdmin) {
   showError({ statusCode: 404, statusMessage: "Page Not Found" });
 }
+
+// Neighbours aren't tied to a location, show the admin tabs of the location
+// the admin came from (or their first location) to navigate back
+const route = useRoute();
+const { data: locations } = await useAsyncData("neighbours-locations", () =>
+  pb.collection("location").getFullList<Location>({ sort: "name" })
+);
+const location = computed(
+  () =>
+    locations.value?.find((l) => l.slug === route.query.location) ??
+    locations.value?.[0]
+);
 
 const {
   data: pending,

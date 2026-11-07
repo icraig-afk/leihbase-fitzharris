@@ -104,6 +104,90 @@ function getAddress(user) {
   };
 }
 
+/**
+ * Escapes text for use in HTML emails
+ * @param {string} text
+ * @returns {string}
+ */
+function escapeHtml(text) {
+  return String(text || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/**
+ * Returns the email addresses of all admins and superusers
+ * @returns {string[]}
+ */
+function getAdminEmails() {
+  const admins = $app.findRecordsByFilter(
+    "users",
+    'role = "admin" && email != ""',
+    "",
+    0,
+    0
+  );
+  const superusers = $app.findAllRecords("_superusers");
+  const emails = [...admins, ...superusers]
+    .map((record) => (record ? record.getString("email") : ""))
+    .filter((email) => !!email);
+  return [...new Set(emails)];
+}
+
+/**
+ * Emails admins and superusers that a new neighbour needs a letter with a
+ * code
+ * @param {core.Record} user
+ */
+function notifyAdminsOfNewNeighbour(user) {
+  const recipients = getAdminEmails();
+  if (recipients.length === 0) {
+    return;
+  }
+
+  const locale = $os.getenv("CONFIG_LOCALE") || "en";
+  const settings = $app.settings();
+  const address = getAddress(user);
+  const addressLine = escapeHtml(
+    [`${address.house_number} ${address.street}`, address.address_extra]
+      .filter(Boolean)
+      .join(", ")
+  );
+  const name = escapeHtml(user.getString("name"));
+  const email = escapeHtml(user.getString("email"));
+  const link = `${settings.meta.appURL}/admin/neighbours`;
+
+  const text =
+    locale === "de"
+      ? {
+          subject: `Neue Nachbar:in braucht einen Code: ${user.getString("name")}`,
+          intro:
+            "Jemand hat sich neu registriert und braucht einen Brief mit Code, um reservieren zu können.",
+          action: "Brief erstellen und drucken",
+        }
+      : {
+          subject: `New neighbour needs a code: ${user.getString("name")}`,
+          intro:
+            "Someone new has signed up and needs a letter with their code before they can reserve.",
+          action: "Create and print the letter",
+        };
+
+  const message = new MailerMessage({
+    from: {
+      address: settings.meta.senderAddress,
+      name: settings.meta.senderName,
+    },
+    to: recipients.map((address) => ({ address })),
+    subject: text.subject,
+    html: `<p>${text.intro}</p>
+<p><strong>${name}</strong><br>${email}<br>${addressLine}</p>
+<p><a href="${link}">${text.action}</a></p>`,
+  });
+  $app.newMailClient().send(message);
+}
+
 module.exports = {
   CODE_VALID_DAYS,
   MAX_ATTEMPTS,
@@ -115,4 +199,6 @@ module.exports = {
   toPocketbaseDate,
   findActiveCode,
   getAddress,
+  getAdminEmails,
+  notifyAdminsOfNewNeighbour,
 };

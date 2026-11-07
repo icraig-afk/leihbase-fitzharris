@@ -7,7 +7,7 @@
         <Button
           v-if="userStore.isAdmin && leihbase.address_verification"
           variant="secondary"
-          to="/admin/neighbours"
+          :to="`/admin/neighbours${locations?.[0] ? `?location=${locations[0].slug}` : ''}`"
         >
           {{ t("neighbours") }}
         </Button>
