@@ -11,7 +11,9 @@ ENV NODE_ENV=production
 WORKDIR /app
 
 COPY . .
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+# No cache mount here: some hosting platforms (e.g. Railway) reject cache
+# mount ids without their own prefix
+RUN pnpm install --frozen-lockfile
 RUN pnpm --filter @leihbase/web run build 
 
 FROM node:22.23.2-alpine3.24 AS prod
