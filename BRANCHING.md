@@ -223,6 +223,7 @@ branch.
 | `fix/pocketbase-dockerfile-prod-last` | Could go upstream, merged into `main` |
 | `fix/password-reset-page`     | Could go upstream, merged into `main`                     |
 | `fix/web-dockerfile-no-cache-mount` | Could go upstream, merged into `main`               |
+| `fix/products-without-opening-hours` | Could go upstream, merged into `main`              |
 
 Both feature branches carry their own copy of the `.gitattributes` fix. Offer
 it upstream on its own first, as a `fix/` branch.
