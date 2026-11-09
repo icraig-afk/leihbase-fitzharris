@@ -65,6 +65,12 @@ export default defineConfig<ConfigOptions>({
       use: devices["Pixel 5"],
       dependencies: ["setup"],
     },
+    {
+      // Breaks the mail server settings, so runs after all other tests
+      name: "Mail alert",
+      testDir: "./mail-alert",
+      dependencies: ["API Tests", "Desktop Chrome", "Mobile Chrome"],
+    },
   ],
 
   /* Run your local dev server before starting the tests */
@@ -74,5 +80,9 @@ export default defineConfig<ConfigOptions>({
     reuseExistingServer: false,
     stdout: "pipe",
     stderr: "pipe",
+    env: {
+      // Receiver started by tests/mail-alert/mail-alert.test.ts
+      CONFIG_MAIL_ALERT_WEBHOOK_URL: "http://127.0.0.1:9450/webhook",
+    },
   },
 });

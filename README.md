@@ -90,6 +90,7 @@ services:
 | `CONFIG_CAP_INSTANCE_HOST`        | Optional, Cap captcha instance host                                              |
 | `CONFIG_CAP_SITE_KEY`             | Optional, Cap captcha site key                                                   |
 | `CONFIG_CAP_SECRET_KEY`           | Optional, Cap captcha secret key                                                 |
+| `CONFIG_MAIL_ALERT_WEBHOOK_URL`   | Optional, webhook (e.g. Discord) alerted when an email fails to send             |
 
 #### Email
 
@@ -97,6 +98,12 @@ To send emails (reservation confirmations, reminders, notifications), configure
 an SMTP server in the PocketBase admin interface (`/_/` > Settings > Mail
 settings). Pickup and return reminders are sent by a cron job every day at 12:00
 (UTC).
+
+To find out when sending emails stops working (e.g. the SMTP server is
+unreachable), set `CONFIG_MAIL_ALERT_WEBHOOK_URL` to a webhook URL, such as a
+[Discord channel webhook](https://support.discord.com/hc/en-us/articles/228383668).
+A failed email is then posted there, at most once per hour, with the recipient
+address partly hidden.
 
 #### Updating & backups
 
