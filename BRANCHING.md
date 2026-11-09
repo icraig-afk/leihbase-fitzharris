@@ -225,6 +225,7 @@ branch.
 | `fix/web-dockerfile-no-cache-mount` | Could go upstream, merged into `main`               |
 | `fix/products-without-opening-hours` | Offered upstream as a pull request, merged into `main` |
 | `feat/mail-failure-alerts`    | Could go upstream (off unless configured), merged into `main` |
+| `fix/english-text-fixes`      | Offered upstream as a pull request, merged into `main`    |
 
 Both feature branches carry their own copy of the `.gitattributes` fix. Offer
 it upstream on its own first, as a `fix/` branch.
