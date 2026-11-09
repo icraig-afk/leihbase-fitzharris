@@ -1,18 +1,24 @@
 <template>
   <HorizontalScroll class="filter-bar">
     <!-- Status filter -->
-    <Select :label="t('status')" orientation="horizontal" v-model="status">
-      <option value="">{{ t("all") }}</option>
+    <Select
+      :label="t('status')"
+      hide-label
+      v-model="status"
+      @input="$emit('input')"
+    >
+      <option value="" :aria-label="t('all')">{{ t("status") }}</option>
       <option value="active">{{ t("active") }}</option>
       <option value="inactive">{{ t("inactive") }}</option>
     </Select>
     <!-- Completeness filter -->
     <Select
       :label="t('missing_info')"
-      orientation="horizontal"
+      hide-label
       v-model="missing"
+      @input="$emit('input')"
     >
-      <option value="">{{ t("all") }}</option>
+      <option value="" :aria-label="t('all')">{{ t("missing_info") }}</option>
       <option value="photo">{{ t("no_photo") }}</option>
       <option value="description">{{ t("no_description") }}</option>
     </Select>
@@ -22,6 +28,7 @@
       :placeholder="`${t('search')}...`"
       v-model="query"
       class="text-search"
+      @input="$emit('input')"
     />
     <!-- Clear filter button -->
     <Button
@@ -32,6 +39,7 @@
         status = '';
         missing = '';
         query = '';
+        $emit('input');
       "
     >
       <Xmark />
@@ -53,6 +61,7 @@ const { t } = useI18n({
 const status = defineModel("status");
 const missing = defineModel("missing");
 const query = defineModel("query");
+defineEmits<{ input: [] }>();
 </script>
 
 <style lang="scss" scoped>
@@ -60,9 +69,6 @@ const query = defineModel("query");
   margin-bottom: var(--fluid-spacing-8) !important;
   display: flex;
   gap: var(--fluid-spacing-4);
-}
-.filter-bar :deep(label) {
-  white-space: nowrap;
 }
 .text-search {
   width: auto !important;
