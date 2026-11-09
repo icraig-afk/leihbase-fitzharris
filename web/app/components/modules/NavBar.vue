@@ -111,6 +111,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
     padding: 0 1rem 0 1rem;
     height: var(--navbar-height);
     background-color: var(--primary-color);
@@ -133,7 +134,8 @@ header {
 
   .logo {
     color: var(--header-text-color);
-    font-size: 1.4rem;
+    // Smaller on narrow screens, so long names fit the navbar's height
+    font-size: clamp(1rem, 4.5vw, 1.4rem);
     font-weight: var(--font-weight-black);
     line-height: 1;
     text-decoration: none;
@@ -157,6 +159,7 @@ header {
 
   .icon {
     display: inline-block;
+    flex-shrink: 0;
     width: 1.5em;
     height: 1.5em;
   }
@@ -164,6 +167,8 @@ header {
 
 .dropdown {
   position: relative;
+  // Keep the menu button's size, also next to a long name
+  flex-shrink: 0;
   .popover {
     position: absolute;
     top: 100%;
