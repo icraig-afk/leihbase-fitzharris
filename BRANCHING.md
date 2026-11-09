@@ -227,6 +227,7 @@ branch.
 | `feat/mail-failure-alerts`    | Could go upstream (off unless configured), merged into `main` |
 | `fix/english-text-fixes`      | Offered upstream as a pull request, merged into `main`    |
 | `fix/admin-product-filters`   | Offered upstream as a pull request, merged into `main`    |
+| `fix/navbar-mobile-icons`     | Could go upstream, merged into `main`                     |
 
 Both feature branches carry their own copy of the `.gitattributes` fix. Offer
 it upstream on its own first, as a `fix/` branch.
