@@ -39,6 +39,8 @@ services:
       CONFIG_CAP_INSTANCE_HOST: ""
       CONFIG_CAP_SITE_KEY: ""
       CONFIG_CAP_SECRET_KEY: ""
+      # Optional webhook (e.g. Discord) alerted when an email fails to send
+      CONFIG_MAIL_ALERT_WEBHOOK_URL: ""
     volumes:
       - pb_data:/pb/pb_data
     networks:
