@@ -166,14 +166,18 @@ function renderTemplate(template, variables) {
 }
 
 /**
- * Gets sender info for a location (falls back to global settings)
+ * Gets sender info for a location. Emails are sent from the sender address of
+ * the mail settings, as mail providers (and SPF/DMARC) only accept senders of
+ * verified domains, which the location's address (e.g. a Gmail address) may
+ * not be. Replies go to the location's address.
  * @param {core.Record} location
- * @returns {{address: string, name: string}}
+ * @returns {{address: string, name: string, replyTo: string}}
  */
 function getSenderInfo(location) {
   return {
-    address: location.get("email") || $app.settings().meta.senderAddress,
+    address: $app.settings().meta.senderAddress,
     name: location.get("name") || $app.settings().meta.senderName,
+    replyTo: location.getString("email"),
   };
 }
 
@@ -272,8 +276,9 @@ function sendLocationTemplateEmail(
     : [{ address: recipientEmail }];
 
   const email = new MailerMessage({
-    from: senderInfo,
+    from: { address: senderInfo.address, name: senderInfo.name },
     to: recipients,
+    headers: senderInfo.replyTo ? { "Reply-To": senderInfo.replyTo } : {},
     ...emailTemplate,
   });
   $app.newMailClient().send(email);
