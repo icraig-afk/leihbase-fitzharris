@@ -228,6 +228,7 @@ branch.
 | `fix/admin-product-filters`   | Offered upstream as a pull request, merged into `main`    |
 | `fix/navbar-mobile-icons`     | Could go upstream, merged into `main`                     |
 | `feat/currency-setting`       | Could go upstream (EUR unless set), merged into `main`    |
+| `fix/location-email-reply-to` | Could go upstream, merged into `main`                     |
 
 Both feature branches carry their own copy of the `.gitattributes` fix. Offer
 it upstream on its own first, as a `fix/` branch.
