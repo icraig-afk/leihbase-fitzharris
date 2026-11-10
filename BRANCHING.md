@@ -225,7 +225,6 @@ branch.
 | `fix/web-dockerfile-no-cache-mount` | Could go upstream, merged into `main`               |
 | `fix/products-without-opening-hours` | Offered upstream as a pull request, merged into `main` |
 | `feat/mail-failure-alerts`    | Could go upstream (off unless configured), merged into `main` |
-| `fix/english-text-fixes`      | Accepted upstream (#87), can be deleted                   |
 | `fix/admin-product-filters`   | Offered upstream as a pull request, merged into `main`    |
 | `fix/navbar-mobile-icons`     | Could go upstream, merged into `main`                     |
 | `feat/currency-setting`       | Could go upstream (EUR unless set), merged into `main`    |
