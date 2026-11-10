@@ -71,6 +71,12 @@ export default defineConfig<ConfigOptions>({
       testDir: "./mail-alert",
       dependencies: ["API Tests", "Desktop Chrome", "Mobile Chrome"],
     },
+    {
+      // Changes settings all other tests rely on, so runs after them
+      name: "Shared settings",
+      testDir: "./shared-settings",
+      dependencies: ["API Tests", "Desktop Chrome", "Mobile Chrome"],
+    },
   ],
 
   /* Run your local dev server before starting the tests */

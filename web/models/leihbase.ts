@@ -16,4 +16,6 @@ export type Leihbase = RecordModel & {
    * post before reserving
    */
   address_verification?: boolean;
+  /** ISO 4217 code of the currency of deposits, "EUR" when empty */
+  currency?: string;
 };
