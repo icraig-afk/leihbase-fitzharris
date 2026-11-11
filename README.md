@@ -154,6 +154,9 @@ The single record in the `leihbase` collection contains instance-wide settings:
 - `description`, `image`: shown on the front page
 - `imprint`, `privacy_policy`: content of the imprint and privacy policy pages
 - `privacy_policy_link`: if set, users have to accept it when signing up
+- `borrower_terms_link` (this fork only): link to the Operating Policy &
+  Borrower Agreement. If set, users have to accept it as well when signing up,
+  and the time is stored in `borrower_terms_accepted` on the user
 - `footer_links`: links shown in the footer, in the same JSON format as location
   [links](#links)
 - `currency`: currency of deposits on the website and in emails, as an ISO 4217

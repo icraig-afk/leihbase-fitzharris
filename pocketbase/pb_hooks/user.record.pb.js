@@ -44,6 +44,20 @@ onRecordCreateRequest((e) => {
     record.set("role", "user");
   }
 
+  // Fork-only: make sure the Operating Policy & Borrower Agreement has been
+  // accepted, if defined, and store when. Superusers creating accounts in the
+  // PocketBase admin interface can skip it.
+  if (!isSuperuser) {
+    record.set("borrower_terms_accepted", "");
+    if (leihbase?.getString("borrower_terms_link")) {
+      const accepted = requestInfo().body["borrower_terms"];
+      if (accepted !== true && accepted !== "true") {
+        throw new BadRequestError("Borrower_terms_required.");
+      }
+      record.set("borrower_terms_accepted", new DateTime());
+    }
+  }
+
   // Neighbour verification: require one of the allowed streets, the address
   // is then verified with a code sent by post
   /** @type {typeof import('./lib/addressVerification')} */
@@ -113,6 +127,16 @@ onRecordUpdateRequest((e) => {
     addressChanged
   ) {
     throw new BadRequestError("Address_locked.");
+  }
+
+  // Fork-only: when the Operating Policy & Borrower Agreement was accepted is
+  // set on sign-up, and can only be changed by a superuser
+  if (
+    !e.hasSuperuserAuth() &&
+    record.getString("borrower_terms_accepted") !==
+      original.getString("borrower_terms_accepted")
+  ) {
+    throw new BadRequestError("Borrower_terms_locked.");
   }
 
   e.next();

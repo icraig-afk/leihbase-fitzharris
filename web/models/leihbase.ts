@@ -6,6 +6,11 @@ export type Leihbase = RecordModel & {
   description?: string;
   contact_link?: string;
   privacy_policy_link?: string;
+  /**
+   * Fork-only: link to the Operating Policy & Borrower Agreement, users have
+   * to accept it when signing up
+   */
+  borrower_terms_link?: string;
   footer_links?: {
     text: string;
     link: string;

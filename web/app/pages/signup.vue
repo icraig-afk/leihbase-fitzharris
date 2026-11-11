@@ -85,6 +85,23 @@
             </i18n-t>
           </label>
         </fieldset>
+        <fieldset v-if="leihbase.borrower_terms_link" class="checkbox">
+          <input
+            id="borrower-terms"
+            name="borrower_terms"
+            type="checkbox"
+            data-testid="borrower-terms-checkbox"
+            value="true"
+            required
+          />
+          <label for="borrower-terms">
+            <i18n-t keypath="borrower_terms" tag="span">
+              <NuxtLink target="_blank" :to="leihbase.borrower_terms_link">{{
+                t("borrower_terms_link")
+              }}</NuxtLink>
+            </i18n-t>
+          </label>
+        </fieldset>
 
         <cap-widget
           v-if="cap.instanceHost && cap.siteKey"
@@ -236,6 +253,11 @@ async function handleSubmit(e: SubmitEvent) {
       signupError.value = t("errors.terms_required");
     } else if (
       e instanceof ClientResponseError &&
+      e.data?.message === "Borrower_terms_required."
+    ) {
+      signupError.value = t("errors.borrower_terms_required");
+    } else if (
+      e instanceof ClientResponseError &&
       e.data?.data?.message === "Captcha_invalid."
     ) {
       signupError.value = t("errors.captcha_invalid");
@@ -300,6 +322,8 @@ fieldset.checkbox {
     "submit": "Sign up",
     "terms_and_conditions": "I have read and agree to the {0}, for the use of my personal data.",
     "terms_and_conditions_link": "data protection information",
+    "borrower_terms": "I have read and agree to the {0}.",
+    "borrower_terms_link": "Operating Policy & Borrower Agreement",
     "address_info": "Sign-up is open to neighbours on our streets. We'll post a code to your address, which you enter here before your first reservation.",
     "street": "Street",
     "street_placeholder": "Choose your street",
@@ -313,6 +337,7 @@ fieldset.checkbox {
       "invalid_email": "E-mail address is invalid or already in use.",
       "email_in_use": "There is already an account with this e-mail address.",
       "terms_required": "To proceed, you must agree to the data protection terms.",
+      "borrower_terms_required": "To proceed, you must agree to the Operating Policy & Borrower Agreement.",
       "captcha": "The website couldn't verify your request, please try again or contact us to resolve the issue.",
       "general": "An error occured during sign up, please try again."
     }
@@ -327,6 +352,8 @@ fieldset.checkbox {
     "password": "Passwort",
     "terms_and_conditions": "Ich habe die {0}, zur Nutzung meiner personenbezogenen Daten gelesen und bin damit einverstanden.",
     "terms_and_conditions_link": "Datenschutzhinweisen",
+    "borrower_terms": "Ich habe die {0} gelesen und bin damit einverstanden.",
+    "borrower_terms_link": "Nutzungsrichtlinie & Ausleihvereinbarung",
     "submit": "Registrieren",
     "address_info": "Die Registrierung steht Nachbar:innen aus unseren Straßen offen. Wir schicken dir einen Code per Post, den du vor deiner ersten Reservierung hier eingibst.",
     "street": "Straße",
@@ -340,6 +367,7 @@ fieldset.checkbox {
       "invalid_email": "Die E-Mail ist ungültig oder wird bereits verwendet.",
       "email_in_use": "Es gibt bereits ein Konto mit dieser E-Mail-Adresse.",
       "terms_required": "Um fortzufahren, musst du den Datenschutzbestimmungen zustimmen.",
+      "borrower_terms_required": "Um fortzufahren, musst du der Nutzungsrichtlinie & Ausleihvereinbarung zustimmen.",
       "captcha": "Die Website konnte deine Anfrage nicht verifizieren. Versuch's bitte nochmal oder kontaktiere uns, um das Problem zu klären.",
       "general": "Beim Erstellen deiner Account ist ein Fehler aufgetreten, bitte versuche es erneut."
     }
