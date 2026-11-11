@@ -225,7 +225,7 @@ branch.
 | `fix/web-dockerfile-no-cache-mount` | Could go upstream, merged into `main`               |
 | `fix/products-without-opening-hours` | Offered upstream ([#86](https://github.com/leihbase/leihbase/pull/86)), merged into `main` |
 | `feat/mail-failure-alerts`    | Could go upstream (off unless configured), merged into `main` |
-| `fix/admin-product-filters`   | Offered upstream ([#88](https://github.com/leihbase/leihbase/pull/88)). Merged into `main`, but temporarily reverted there (`93658fe`) for screenshots: revert that commit to re-apply |
+| `fix/admin-product-filters`   | Offered upstream ([#88](https://github.com/leihbase/leihbase/pull/88), event handling only: the select UI changes were declined), merged into `main` |
 | `fix/navbar-mobile-icons`     | Could go upstream, merged into `main`                     |
 | `feat/currency-setting`       | Offered upstream ([#91](https://github.com/leihbase/leihbase/pull/91), for [#89](https://github.com/leihbase/leihbase/issues/89)), EUR unless set, merged into `main` |
 | `fix/location-email-reply-to` | Could go upstream, merged into `main`                     |
