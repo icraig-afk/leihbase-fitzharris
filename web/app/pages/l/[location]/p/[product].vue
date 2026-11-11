@@ -107,7 +107,7 @@ import { Lock } from "@iconoir/vue";
 import type { RecordModel } from "pocketbase";
 
 const { formatCurrency } = useCurrency();
-const { t } = useI18n({ useScope: "local" });
+const { t, locale } = useI18n({ useScope: "local" });
 const config = useRuntimeConfig();
 const {
   product: { thumbs },
