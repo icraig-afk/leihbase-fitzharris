@@ -216,19 +216,23 @@ branch.
 | Branch                        | Status                                                    |
 | ----------------------------- | --------------------------------------------------------- |
 | `next`                        | Same as upstream                                          |
-| `main`                        | Runs everything below, plus the street seed               |
+| `main`                        | Runs everything below except where noted, plus the street seed |
 | `chore/local-docker-setup`    | Fork-only, merged into `main`                             |
 | `feat/multi-location-search`  | Could go upstream, merged into `main`                     |
 | `feat/neighbour-verification` | Could go upstream (off by default), merged into `main`    |
 | `fix/pocketbase-dockerfile-prod-last` | Could go upstream, merged into `main` |
 | `fix/password-reset-page`     | Could go upstream, merged into `main`                     |
 | `fix/web-dockerfile-no-cache-mount` | Could go upstream, merged into `main`               |
-| `fix/products-without-opening-hours` | Offered upstream as a pull request, merged into `main` |
+| `fix/products-without-opening-hours` | Offered upstream ([#86](https://github.com/leihbase/leihbase/pull/86)), merged into `main` |
 | `feat/mail-failure-alerts`    | Could go upstream (off unless configured), merged into `main` |
-| `fix/admin-product-filters`   | Offered upstream as a pull request, merged into `main`    |
+| `fix/admin-product-filters`   | Offered upstream ([#88](https://github.com/leihbase/leihbase/pull/88)). Merged into `main`, but temporarily reverted there (`93658fe`) for screenshots: revert that commit to re-apply |
 | `fix/navbar-mobile-icons`     | Could go upstream, merged into `main`                     |
-| `feat/currency-setting`       | Could go upstream (EUR unless set), merged into `main`    |
+| `feat/currency-setting`       | Offered upstream ([#91](https://github.com/leihbase/leihbase/pull/91), for [#89](https://github.com/leihbase/leihbase/issues/89)), EUR unless set, merged into `main` |
 | `fix/location-email-reply-to` | Could go upstream, merged into `main`                     |
+| `feat/location-notification-addresses` | Draft pull request upstream ([#90](https://github.com/leihbase/leihbase/pull/90)), not merged into `main` yet |
+
+Accepted upstream, and deleted: `fix/english-text-fixes`
+([#87](https://github.com/leihbase/leihbase/pull/87)).
 
 Both feature branches carry their own copy of the `.gitattributes` fix. Offer
 it upstream on its own first, as a `fix/` branch.
