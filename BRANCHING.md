@@ -218,6 +218,7 @@ branch.
 | `next`                        | Same as upstream                                          |
 | `main`                        | Runs everything below except where noted, plus the street seed |
 | `chore/local-docker-setup`    | Fork-only, merged into `main`                             |
+| `chore/signup-borrower-terms` | Fork-only (Operating Policy & Borrower Agreement on sign-up), merged into `main`. Replace with upstream's sign-up agreements ([#73](https://github.com/leihbase/leihbase/issues/73)) or borrowing terms ([#85](https://github.com/leihbase/leihbase/pull/85)) once available |
 | `feat/multi-location-search`  | Could go upstream, merged into `main`                     |
 | `feat/neighbour-verification` | Could go upstream (off by default), merged into `main`    |
 | `fix/pocketbase-dockerfile-prod-last` | Could go upstream, merged into `main` |
