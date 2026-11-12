@@ -2,18 +2,18 @@ import { expect, type Page } from "@playwright/test";
 import { ClientResponseError } from "pocketbase";
 import type { Location } from "../../web/models/location";
 import { pocketbase } from "../services/pocketbase";
-import { waitForClientMount } from "./utils";
+import { waitForHydration } from "./utils";
 
 /**
  * Navigates to the product page,
  * given a product id
  */
 export async function navigateToProductPage(page: Page, productId: string) {
-  await page.goto(`/l/test-store`);
-  await waitForClientMount(page.getByTestId(`product-card-${productId}`));
-  await page.getByTestId(`product-card-${productId}`).click();
-  await page.waitForURL(/\/l\/test-store\/p\/(.+)/);
-  await expect(page.url()).toContain("/l/test-store/p/");
+  // Open the product page directly: all test products are named "Test
+  // Product", so once the test store holds more than one page of them, a new
+  // product's card isn't necessarily on the first page of the store
+  await page.goto(`/l/test-store/p/${productId}`);
+  await waitForHydration(page);
   await expect(page.getByTestId("product-page-h1")).toBeVisible();
 }
 
