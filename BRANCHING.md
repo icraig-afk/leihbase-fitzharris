@@ -215,25 +215,32 @@ branch.
 
 | Branch                        | Status                                                    |
 | ----------------------------- | --------------------------------------------------------- |
-| `next`                        | Same as upstream                                          |
-| `main`                        | Runs everything below except where noted, plus the street seed |
+| `next`                        | Same as upstream (v2.7.0)                                 |
+| `main`                        | Upstream v2.7.0, plus everything below except where noted, plus the street seed |
 | `chore/local-docker-setup`    | Fork-only, merged into `main`                             |
-| `chore/signup-borrower-terms` | Fork-only (Operating Policy & Borrower Agreement on sign-up), merged into `main`. Replace with upstream's sign-up agreements ([#73](https://github.com/leihbase/leihbase/issues/73)) or borrowing terms ([#85](https://github.com/leihbase/leihbase/pull/85)) once available |
+| `chore/signup-borrower-terms` | Fork-only (Operating Policy & Borrower Agreement on sign-up), merged into `main`. Upstream's per-location borrowing terms ([#85](https://github.com/leihbase/leihbase/pull/85)) are now in `main` too: decide whether to move the Borrower Agreement there. Sign-up agreements ([#73](https://github.com/leihbase/leihbase/issues/73)) aren't upstream yet |
 | `feat/multi-location-search`  | Could go upstream, merged into `main`                     |
 | `feat/neighbour-verification` | Could go upstream (off by default), merged into `main`    |
 | `fix/pocketbase-dockerfile-prod-last` | Could go upstream, merged into `main` |
 | `fix/password-reset-page`     | Could go upstream, merged into `main`                     |
 | `fix/web-dockerfile-no-cache-mount` | Could go upstream, merged into `main`               |
-| `fix/products-without-opening-hours` | Offered upstream ([#86](https://github.com/leihbase/leihbase/pull/86)), merged into `main` |
 | `feat/mail-failure-alerts`    | Could go upstream (off unless configured), merged into `main` |
-| `fix/admin-product-filters`   | Offered upstream ([#88](https://github.com/leihbase/leihbase/pull/88), event handling only: the select UI changes were declined), merged into `main` |
 | `fix/navbar-mobile-icons`     | Could go upstream, merged into `main`                     |
-| `feat/currency-setting`       | Offered upstream ([#91](https://github.com/leihbase/leihbase/pull/91), for [#89](https://github.com/leihbase/leihbase/issues/89)), EUR unless set, merged into `main` |
+| `feat/currency-setting`       | Offered upstream ([#91](https://github.com/leihbase/leihbase/pull/91), for [#89](https://github.com/leihbase/leihbase/issues/89)), EUR unless set, merged into `main`. Needs a rebase onto `next`: it conflicts with v2.7.0 in `ReservationDrawer.vue` |
 | `fix/location-email-reply-to` | Could go upstream, merged into `main`                     |
 | `feat/location-notification-addresses` | Draft pull request upstream ([#90](https://github.com/leihbase/leihbase/pull/90)), not merged into `main` yet |
 
 Accepted upstream, and deleted: `fix/english-text-fixes`
-([#87](https://github.com/leihbase/leihbase/pull/87)).
+([#87](https://github.com/leihbase/leihbase/pull/87)), `fix/admin-product-filters`
+([#88](https://github.com/leihbase/leihbase/pull/88), v2.7.0).
+
+Replaced by upstream's own fix, and deleted: `fix/products-without-opening-hours`
+([#86](https://github.com/leihbase/leihbase/pull/86), closed for
+[`3753962`](https://github.com/leihbase/leihbase/commit/375396211bc2d05bef707404d844a929d45bade7)).
+
+`tests/lib/product.ts` opens product pages directly (`66c0c56`): with the
+v2.7.0 tests, the test store has more products than fit on its first page.
+Could be offered upstream.
 
 Both feature branches carry their own copy of the `.gitattributes` fix. Offer
 it upstream on its own first, as a `fix/` branch.
