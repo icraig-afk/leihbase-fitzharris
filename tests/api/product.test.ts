@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import type { Location } from "../../web/models/location";
 import {
   ALL_DAYS_OPENING_HOURS,
   createLocation,
@@ -7,7 +6,7 @@ import {
 } from "../lib/location";
 import { createProduct, getProductWithAvailability } from "../lib/product";
 import { createReservation } from "../lib/reservation";
-import { getFutureDate, getPastDate, getToday, uniqueId } from "../lib/utils";
+import { getFutureDate, getPastDate, getToday } from "../lib/utils";
 import { pocketbase } from "../services/pocketbase";
 
 test.describe("product", () => {
@@ -192,33 +191,196 @@ test.describe("product", () => {
       expect(productWithAvailability.computedIsAvailable).toBe(false);
     });
 
-    test("product of location with 'multiple' system and no opening hours shows as unavailable, without breaking the product list", async () => {
-      // Create a location without opening hours, as possible in the admin UI
-      const adminPb = await pocketbase();
-      const id = uniqueId();
-      const location = await adminPb.collection("location").create({
-        active: true,
-        name: `Test Location without opening hours ${id}`,
-        address: "Test Address",
-        email: "location-no-hours@example.com",
-        slug: `test-location-no-hours-${id}`,
-        reservation_system: "multiple",
-        max_reservation_days: 14,
-      });
-      const product = await createProduct(location as Location);
+    test("product of location with 'multiple' system and no opening hours and no reservations shows as available", async () => {
+      // Location without opening hours is assumed to be open every day
+      const location = await createLocation("multiple", null);
+      const product = await createProduct(location);
 
-      // Fetch product with availability computation
+      const productWithAvailability = await getProductWithAvailability(
+        product.id
+      );
+      expect(productWithAvailability.computedIsAvailable).toBe(true);
+    });
+
+    test("product of location with 'multiple' system and no opening hours and reservation starting today shows as unavailable", async () => {
+      const location = await createLocation("multiple", null);
+      const product = await createProduct(location);
+      const adminPb = await pocketbase();
+      const adminUser = await adminPb.collection("users").getFirstListItem("");
+
+      // Overlaps with today/tomorrow window
+      await createReservation(adminPb, {
+        user: adminUser.id,
+        product: product.id,
+        location: location.id,
+        start: getToday(),
+        end: getFutureDate(1),
+      });
+
       const productWithAvailability = await getProductWithAvailability(
         product.id
       );
       expect(productWithAvailability.computedIsAvailable).toBe(false);
+    });
 
-      // Listing products of all locations still works
-      const list = await adminPb.collection("products").getList(1, 24, {
-        filter: "active = true",
-        query: { computeAvailability: true },
+    test("product of location with 'multiple' system and no opening hours and future reservation shows as available", async () => {
+      const location = await createLocation("multiple", null);
+      const product = await createProduct(location);
+      const adminPb = await pocketbase();
+      const adminUser = await adminPb.collection("users").getFirstListItem("");
+
+      // Starts after the today/tomorrow window
+      await createReservation(adminPb, {
+        user: adminUser.id,
+        product: product.id,
+        location: location.id,
+        start: getFutureDate(3),
+        end: getFutureDate(4),
       });
-      expect(list.totalItems).toBeGreaterThan(0);
+
+      const productWithAvailability = await getProductWithAvailability(
+        product.id
+      );
+      expect(productWithAvailability.computedIsAvailable).toBe(true);
+    });
+
+    test("product of location with 'multiple' system and no open days in the lookup period shows as unavailable", async () => {
+      // All days open, but every date in the coming weeks is an exception
+      const exceptDates = Array.from(
+        { length: 40 },
+        (_, i) =>
+          getFutureDate(i - 1)
+            .toISOString()
+            .split("T")[0]
+      );
+      const location = await createLocation("multiple", {
+        ...ALL_DAYS_OPENING_HOURS,
+        except: { dates: exceptDates },
+      });
+      const product = await createProduct(location);
+
+      const productWithAvailability = await getProductWithAvailability(
+        product.id
+      );
+      expect(productWithAvailability.computedIsAvailable).toBe(false);
+    });
+
+    test("product of location with 'single' system and no reservations shows as available", async () => {
+      const location = await createLocation("single");
+      const product = await createProduct(location);
+
+      const productWithAvailability = await getProductWithAvailability(
+        product.id
+      );
+      expect(productWithAvailability.computedIsAvailable).toBe(true);
+    });
+
+    test("product of location with 'multiple' system and reservation ended yesterday shows as available", async () => {
+      // All days open, so the availability window is today until tomorrow
+      const location = await createLocation("multiple", ALL_DAYS_OPENING_HOURS);
+      const product = await createProduct(location);
+      const adminPb = await pocketbase();
+      const adminUser = await adminPb.collection("users").getFirstListItem("");
+
+      // Ends before the window, should not be counted
+      await createReservation(adminPb, {
+        user: adminUser.id,
+        product: product.id,
+        location: location.id,
+        start: getPastDate(3),
+        end: getPastDate(1),
+      });
+
+      const productWithAvailability = await getProductWithAvailability(
+        product.id
+      );
+      expect(productWithAvailability.computedIsAvailable).toBe(true);
+    });
+
+    test("product of location with 'multiple' system and closure today ignores reservation ending today", async () => {
+      // All days open except today, so the window is tomorrow until the day after
+      const today = getToday().toISOString().split("T")[0];
+      const location = await createLocation("multiple", {
+        ...ALL_DAYS_OPENING_HOURS,
+        except: { dates: [today] },
+      });
+      const product = await createProduct(location);
+      const adminPb = await pocketbase();
+      const adminUser = await adminPb.collection("users").getFirstListItem("");
+
+      // Ends today, before the window starts
+      await createReservation(adminPb, {
+        user: adminUser.id,
+        product: product.id,
+        location: location.id,
+        start: getPastDate(1),
+        end: getToday(),
+      });
+
+      const productWithAvailability = await getProductWithAvailability(
+        product.id
+      );
+      expect(productWithAvailability.computedIsAvailable).toBe(true);
+    });
+
+    test("product of location with 'multiple' system and closure today counts reservation starting tomorrow", async () => {
+      // All days open except today, so the window is tomorrow until the day after
+      const today = getToday().toISOString().split("T")[0];
+      const location = await createLocation("multiple", {
+        ...ALL_DAYS_OPENING_HOURS,
+        except: { dates: [today] },
+      });
+      const product = await createProduct(location);
+      const adminPb = await pocketbase();
+      const adminUser = await adminPb.collection("users").getFirstListItem("");
+
+      // Starts on the first day of the window
+      await createReservation(adminPb, {
+        user: adminUser.id,
+        product: product.id,
+        location: location.id,
+        start: getFutureDate(1),
+        end: getFutureDate(2),
+      });
+
+      const productWithAvailability = await getProductWithAvailability(
+        product.id
+      );
+      expect(productWithAvailability.computedIsAvailable).toBe(false);
+    });
+  });
+
+  test.describe("computeAvailability query parameter", () => {
+    test("availability is not computed without the parameter", async () => {
+      const location = await createLocation("multiple");
+      const product = await createProduct(location);
+
+      const fetched = await getProductWithAvailability(product.id, null);
+      expect(fetched.computedIsAvailable).toBeUndefined();
+    });
+
+    test("availability is not computed with computeAvailability=false", async () => {
+      const location = await createLocation("multiple");
+      const product = await createProduct(location);
+
+      const fetched = await getProductWithAvailability(product.id, false);
+      expect(fetched.computedIsAvailable).toBeUndefined();
+    });
+
+    test("availability is not computed with computeAvailability=0", async () => {
+      const location = await createLocation("multiple");
+      const product = await createProduct(location);
+
+      const fetched = await getProductWithAvailability(product.id, 0);
+      expect(fetched.computedIsAvailable).toBeUndefined();
+    });
+
+    test("availability is computed with computeAvailability=1", async () => {
+      const location = await createLocation("multiple");
+      const product = await createProduct(location);
+
+      const fetched = await getProductWithAvailability(product.id, 1);
+      expect(fetched.computedIsAvailable).toBe(true);
     });
   });
 });

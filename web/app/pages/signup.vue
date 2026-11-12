@@ -68,40 +68,36 @@
             data-testid="address-extra-input"
           />
         </template>
-        <fieldset v-if="leihbase.privacy_policy_link" class="checkbox">
-          <input
-            id="terms-and-conditions"
-            name="terms"
-            type="checkbox"
-            data-testid="tac-checkbox"
-            value="true"
-            required
-          />
-          <label for="terms-and-conditions">
-            <i18n-t keypath="terms_and_conditions" tag="span">
-              <NuxtLink target="_blank" :to="leihbase.privacy_policy_link">{{
-                t("terms_and_conditions_link")
-              }}</NuxtLink>
-            </i18n-t>
-          </label>
-        </fieldset>
-        <fieldset v-if="leihbase.borrower_terms_link" class="checkbox">
-          <input
-            id="borrower-terms"
-            name="borrower_terms"
-            type="checkbox"
-            data-testid="borrower-terms-checkbox"
-            value="true"
-            required
-          />
-          <label for="borrower-terms">
-            <i18n-t keypath="borrower_terms" tag="span">
-              <NuxtLink target="_blank" :to="leihbase.borrower_terms_link">{{
-                t("borrower_terms_link")
-              }}</NuxtLink>
-            </i18n-t>
-          </label>
-        </fieldset>
+        <Checkbox
+          v-if="leihbase.privacy_policy_link"
+          id="terms-and-conditions"
+          name="terms"
+          value="true"
+          data-testid="tac-checkbox"
+          required
+          class="terms"
+        >
+          <i18n-t keypath="terms_and_conditions" tag="span">
+            <NuxtLink target="_blank" :to="leihbase.privacy_policy_link">{{
+              t("terms_and_conditions_link")
+            }}</NuxtLink>
+          </i18n-t>
+        </Checkbox>
+        <Checkbox
+          v-if="leihbase.borrower_terms_link"
+          id="borrower-terms"
+          name="borrower_terms"
+          value="true"
+          data-testid="borrower-terms-checkbox"
+          required
+          class="terms"
+        >
+          <i18n-t keypath="borrower_terms" tag="span">
+            <NuxtLink target="_blank" :to="leihbase.borrower_terms_link">{{
+              t("borrower_terms_link")
+            }}</NuxtLink>
+          </i18n-t>
+        </Checkbox>
 
         <cap-widget
           v-if="cap.instanceHost && cap.siteKey"
@@ -136,6 +132,7 @@
 <script lang="ts" setup>
 import Button from "@/components/core/Button.vue";
 import Card from "@/components/core/Card.vue";
+import Checkbox from "@/components/core/Checkbox.vue";
 import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import Input from "@/components/core/Input.vue";
@@ -299,13 +296,9 @@ sl-alert::part(base) {
   margin: 0;
 }
 
-fieldset.checkbox {
-  border: 0;
+.terms {
   padding: 0.5rem 0;
   width: 100%;
-  input {
-    margin-right: 0.5rem;
-  }
 }
 </style>
 

@@ -97,9 +97,6 @@ useHead({
   title: `${t("title")} | ${location.value.name}`,
 });
 
-// Refetch when a filter changes. Watching the values, rather than refreshing on
-// the `input` event, ensures the new value is used: a <select> only updates its
-// v-model on the `change` event, which comes after `input`.
 const {
   data: products,
   refresh,
@@ -110,12 +107,12 @@ const {
     const params: Record<string, any> = { location: location.value!.id };
     if (status.value) {
       filters.push("active = {:active}");
-      params["active"] = status.value === "active" ? true : false;
+      params.active = status.value === "active";
     }
-    if (missing.value && missing.value === "photo") {
+    if (missing.value === "photo") {
       filters.push("images:length = 0");
     }
-    if (missing.value && missing.value === "description") {
+    if (missing.value === "description") {
       filters.push("description = ''");
     }
     if (query.value) {
@@ -127,6 +124,7 @@ const {
       sort: "name",
     });
   },
+  // Refetch when a filter changes
   { watch: [status, missing, query] }
 );
 
