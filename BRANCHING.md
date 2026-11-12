@@ -226,7 +226,7 @@ branch.
 | `fix/web-dockerfile-no-cache-mount` | Could go upstream, merged into `main`               |
 | `feat/mail-failure-alerts`    | Could go upstream (off unless configured), merged into `main` |
 | `fix/navbar-mobile-icons`     | Could go upstream, merged into `main`                     |
-| `feat/currency-setting`       | Offered upstream ([#91](https://github.com/leihbase/leihbase/pull/91), for [#89](https://github.com/leihbase/leihbase/issues/89)), EUR unless set, merged into `main`. Needs a rebase onto `next`: it conflicts with v2.7.0 in `ReservationDrawer.vue` |
+| `feat/currency-setting`       | Offered upstream ([#91](https://github.com/leihbase/leihbase/pull/91), for [#89](https://github.com/leihbase/leihbase/issues/89)), EUR unless set, merged into `main`. Up to date with v2.7.0 (merged `next` into it, no rebase) |
 | `fix/location-email-reply-to` | Could go upstream, merged into `main`                     |
 | `feat/location-notification-addresses` | Draft pull request upstream ([#90](https://github.com/leihbase/leihbase/pull/90)), not merged into `main` yet |
 
