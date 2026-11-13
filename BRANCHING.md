@@ -213,34 +213,56 @@ branch.
 
 ## Where the branches stand
 
-| Branch                        | Status                                                    |
-| ----------------------------- | --------------------------------------------------------- |
-| `next`                        | Same as upstream (v2.7.0)                                 |
-| `main`                        | Upstream v2.7.0, plus everything below except where noted, plus the street seed |
-| `chore/local-docker-setup`    | Fork-only, merged into `main`                             |
-| `chore/signup-borrower-terms` | Fork-only (Operating Policy & Borrower Agreement on sign-up), merged into `main`. Upstream's per-location borrowing terms ([#85](https://github.com/leihbase/leihbase/pull/85)) are now in `main` too: decide whether to move the Borrower Agreement there. Sign-up agreements ([#73](https://github.com/leihbase/leihbase/issues/73)) aren't upstream yet |
-| `feat/multi-location-search`  | Could go upstream, merged into `main`                     |
-| `feat/neighbour-verification` | Could go upstream (off by default), merged into `main`    |
+Last checked against upstream on 2026-11-13.
+
+| Branch | Status |
+| --- | --- |
+| `next` | Same as upstream: v2.7.0 plus the currency setting (unreleased) |
+| `main` | `next`, plus every branch below except where noted, plus the main-only changes listed further down |
+| `chore/local-docker-setup` | Fork-only, merged into `main` |
+| `chore/signup-borrower-terms` | Fork-only (Operating Policy & Borrower Agreement checkbox on sign-up), merged into `main`. Upstream's per-location borrowing terms ([#85](https://github.com/leihbase/leihbase/pull/85), v2.7.0) are now in `main` too: decide whether to move the Borrower Agreement there. Sign-up agreements ([#73](https://github.com/leihbase/leihbase/issues/73)) aren't upstream yet. Branched from `main`, so it also contains `main`'s other commits |
+| `feat/multi-location-search` | Could go upstream, merged into `main`. Needs `0092dde` (below) |
+| `feat/neighbour-verification` | Could go upstream (off by default), merged into `main`. Needs the v2.7.0 adjustments (below) |
+| `feat/mail-failure-alerts` | Could go upstream (off unless configured), merged into `main` |
+| `fix/location-email-reply-to` | Could go upstream, merged into `main` |
+| `fix/navbar-mobile-icons` | Could go upstream, merged into `main` |
+| `fix/password-reset-page` | Could go upstream, merged into `main` |
 | `fix/pocketbase-dockerfile-prod-last` | Could go upstream, merged into `main` |
-| `fix/password-reset-page`     | Could go upstream, merged into `main`                     |
-| `fix/web-dockerfile-no-cache-mount` | Could go upstream, merged into `main`               |
-| `feat/mail-failure-alerts`    | Could go upstream (off unless configured), merged into `main` |
-| `fix/navbar-mobile-icons`     | Could go upstream, merged into `main`                     |
-| `feat/currency-setting`       | Offered upstream ([#91](https://github.com/leihbase/leihbase/pull/91), for [#89](https://github.com/leihbase/leihbase/issues/89)), EUR unless set, merged into `main`. Up to date with v2.7.0 (merged `next` into it, no rebase) |
-| `fix/location-email-reply-to` | Could go upstream, merged into `main`                     |
+| `fix/web-dockerfile-no-cache-mount` | Could go upstream, merged into `main` |
 | `feat/location-notification-addresses` | Draft pull request upstream ([#90](https://github.com/leihbase/leihbase/pull/90)), not merged into `main` yet |
 
-Accepted upstream, and deleted: `fix/english-text-fixes`
-([#87](https://github.com/leihbase/leihbase/pull/87)), `fix/admin-product-filters`
-([#88](https://github.com/leihbase/leihbase/pull/88), v2.7.0).
+All branches that could go upstream are based on `next` from before v2.7.0
+(58 to 61 commits behind). Merge `next` into a branch, and run the tests,
+before offering it.
 
-Replaced by upstream's own fix, and deleted: `fix/products-without-opening-hours`
-([#86](https://github.com/leihbase/leihbase/pull/86), closed for
-[`3753962`](https://github.com/leihbase/leihbase/commit/375396211bc2d05bef707404d844a929d45bade7)).
+### Accepted upstream, or replaced
 
-`tests/lib/product.ts` opens product pages directly (`66c0c56`): with the
-v2.7.0 tests, the test store has more products than fit on its first page.
-Could be offered upstream.
+| Branch | Outcome |
+| --- | --- |
+| `fix/english-text-fixes` | Accepted ([#87](https://github.com/leihbase/leihbase/pull/87)), branch deleted |
+| `fix/admin-product-filters` | Accepted, event handling only: the select UI changes were declined ([#88](https://github.com/leihbase/leihbase/pull/88), v2.7.0), branch deleted |
+| `fix/products-without-opening-hours` | Closed: replaced by upstream's own fix [`3753962`](https://github.com/leihbase/leihbase/commit/375396211bc2d05bef707404d844a929d45bade7) ([#86](https://github.com/leihbase/leihbase/pull/86), v2.7.0), branch deleted |
+| `feat/currency-setting` | Accepted ([#91](https://github.com/leihbase/leihbase/pull/91), for [#89](https://github.com/leihbase/leihbase/issues/89)), with upstream follow-ups: two decimals, sync tests, and a help text. **Branch still to delete** |
 
-Both feature branches carry their own copy of the `.gitattributes` fix. Offer
-it upstream on its own first, as a `fix/` branch.
+Upstream added the currency field's help text by editing
+`1794200000_leihbase_currency.js`, which had already run on this fork's
+database. The fork's database doesn't get the help text: set it by hand in
+`/_/` if wanted. Only the help text changed, so nothing else differs.
+
+### Main-only changes
+
+Changes made on `main` directly, rather than on a branch, that matter when the
+related branch is offered upstream:
+
+| Commit | What | When it matters |
+| --- | --- | --- |
+| `3d47b99` | Seed of the Fitzharris streets | Fork-only data, never upstream |
+| `0092dde` | Product page: `locale` restored for the category names in the breadcrumb, which the currency setting removed | Offering `feat/multi-location-search`: upstream's product page has no `locale` any more, so the branch needs this fix |
+| `e63e735` | Test: product page with categories | Offer along with `feat/multi-location-search` |
+| `66c0c56` | Test helper opens product pages directly: with the v2.7.0 tests, the test store has more products than fit on its first page | Could be offered upstream on its own |
+| `cf564c8` | Merge of v2.7.0, adapting neighbour verification to the new reservation dialog: the `User_address_not_verified.` error in `useCreateReservation.ts` and `i18n.config.ts`, and the address fields on the sign-up page next to the new `Checkbox` | Offering `feat/neighbour-verification`: the branch predates v2.7.0, so make the same changes there |
+
+The `.gitattributes` fix (shell scripts keep LF line endings) is on `main`,
+`feat/multi-location-search` and `feat/neighbour-verification`, as two separate
+commits (`37c8723`, `6095d75`). Upstream doesn't have it. Offer it on its own
+first, as a `fix/` branch (see [Shared fixes](#shared-fixes)).
