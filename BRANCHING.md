@@ -242,7 +242,7 @@ before offering it.
 | `fix/english-text-fixes` | Accepted ([#87](https://github.com/leihbase/leihbase/pull/87)), branch deleted |
 | `fix/admin-product-filters` | Accepted, event handling only: the select UI changes were declined ([#88](https://github.com/leihbase/leihbase/pull/88), v2.7.0), branch deleted |
 | `fix/products-without-opening-hours` | Closed: replaced by upstream's own fix [`3753962`](https://github.com/leihbase/leihbase/commit/375396211bc2d05bef707404d844a929d45bade7) ([#86](https://github.com/leihbase/leihbase/pull/86), v2.7.0), branch deleted |
-| `feat/currency-setting` | Accepted ([#91](https://github.com/leihbase/leihbase/pull/91), for [#89](https://github.com/leihbase/leihbase/issues/89)), with upstream follow-ups: two decimals, sync tests, and a help text. **Branch still to delete** |
+| `feat/currency-setting` | Accepted ([#91](https://github.com/leihbase/leihbase/pull/91), for [#89](https://github.com/leihbase/leihbase/issues/89)), with upstream follow-ups: two decimals, sync tests, and a help text. Branch deleted |
 
 Upstream added the currency field's help text by editing
 `1794200000_leihbase_currency.js`, which had already run on this fork's
