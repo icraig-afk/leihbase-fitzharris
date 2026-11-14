@@ -77,7 +77,7 @@ import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import Link from "@/components/core/Link.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
-import { RETENTION_PLACEHOLDERS } from "@/composables/useRetentionPlaceholders";
+import { POLICY_PLACEHOLDERS } from "@/composables/useRetentionPlaceholders";
 import type { BorrowAgreement } from "~~/models/borrowAgreement";
 import type { PrivacyPolicy } from "~~/models/privacyPolicy";
 
@@ -118,9 +118,7 @@ const { data: borrowAgreement } = await useAsyncData(
 );
 
 // Fork-only: the placeholders, as written in the privacy policy
-const retentionPlaceholders = Object.keys(RETENTION_PLACEHOLDERS).map(
-  (name) => `{${name}}`
-);
+const retentionPlaceholders = POLICY_PLACEHOLDERS;
 
 const privacyPolicyEditor = ref<InstanceType<typeof AgreementEditor>>();
 const borrowAgreementEditor = ref<InstanceType<typeof AgreementEditor>>();
@@ -188,7 +186,7 @@ async function handleSubmit() {
       "description": "Borrowing terms of all locations, unless a location has borrowing terms of its own. Users accept them when signing up, and again after they change. Shown on the /borrowing-terms page. Leave empty to not use instance-wide borrowing terms."
     },
     "view-page": "View the page",
-    "placeholders": "Instead of fixed durations, you can use these placeholders, which show the data retention periods as currently set:",
+    "placeholders": "Instead of fixed values, you can use these placeholders, which show the name of the library and the data retention periods as currently set:",
     "success": "Settings saved.",
     "error": "The settings couldn't be saved, please try again.",
     "save": "Save"
@@ -205,7 +203,7 @@ async function handleSubmit() {
       "description": "Leihbedingungen aller Standorte, außer ein Standort hat eigene Leihbedingungen. Nutzer akzeptieren sie bei der Registrierung, und erneut nach Änderungen. Wird auf der Seite /borrowing-terms angezeigt. Leer lassen, um keine instanzweiten Leihbedingungen zu verwenden."
     },
     "view-page": "Seite ansehen",
-    "placeholders": "Statt fester Zeiträume kannst du diese Platzhalter verwenden, die die aktuell eingestellten Aufbewahrungsfristen anzeigen:",
+    "placeholders": "Statt fester Werte kannst du diese Platzhalter verwenden, die den Namen der Bibliothek und die aktuell eingestellten Aufbewahrungsfristen anzeigen:",
     "success": "Einstellungen gespeichert.",
     "error": "Die Einstellungen konnten nicht gespeichert werden, bitte versuche es erneut.",
     "save": "Speichern"

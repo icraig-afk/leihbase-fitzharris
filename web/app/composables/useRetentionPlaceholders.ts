@@ -16,6 +16,15 @@ export const RETENTION_PLACEHOLDERS = {
   RETENTION_BACKUPS: "backups",
 } as const;
 
+/** Fork-only: the name of the library, from the leihbase record */
+export const LIBRARY_NAME_PLACEHOLDER = "LIBRARY_NAME";
+
+/** All placeholders, as written in the text */
+export const POLICY_PLACEHOLDERS = [
+  LIBRARY_NAME_PLACEHOLDER,
+  ...Object.keys(RETENTION_PLACEHOLDERS),
+].map((name) => `{${name}}`);
+
 type Periods = Partial<
   Record<
     (typeof RETENTION_PLACEHOLDERS)[keyof typeof RETENTION_PLACEHOLDERS],
@@ -23,30 +32,50 @@ type Periods = Partial<
   >
 >;
 
+/** Escapes text to insert it in HTML */
+function escapeHtml(text: string) {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 export function useRetentionPlaceholders() {
   const { pb } = usePocketbase();
   const { locale } = useI18n();
+  const { leihbase } = storeToRefs(useLeihbase());
 
   /**
-   * Replaces the retention placeholders in the HTML with the current periods
+   * Replaces the placeholders in the HTML: the name of the library, and the
+   * retention periods as currently set
    */
   async function fill(html: string) {
-    if (!html || !html.includes("{RETENTION_")) {
+    if (!html || !/\{(RETENTION_[A-Z_]+|LIBRARY_NAME)\}/.test(html)) {
       return html;
     }
     let periods: Periods = {};
-    try {
-      periods = await pb.send<Periods>("/api/retention/periods", {
-        requestKey: null,
-      });
-    } catch (e) {
-      console.error("Failed to load the retention periods", e);
+    if (html.includes("{RETENTION_")) {
+      try {
+        periods = await pb.send<Periods>("/api/retention/periods", {
+          requestKey: null,
+        });
+      } catch (e) {
+        console.error("Failed to load the retention periods", e);
+      }
     }
-    return html.replace(/\{(RETENTION_[A-Z_]+)\}/g, (match, name: string) => {
-      const key =
-        RETENTION_PLACEHOLDERS[name as keyof typeof RETENTION_PLACEHOLDERS];
-      return key ? formatPeriod(periods[key], locale.value) : match;
-    });
+    const libraryName = escapeHtml((leihbase.value?.name || "").trim());
+    return html.replace(
+      /\{(RETENTION_[A-Z_]+|LIBRARY_NAME)\}/g,
+      (match, name: string) => {
+        if (name === LIBRARY_NAME_PLACEHOLDER) {
+          return libraryName;
+        }
+        const key =
+          RETENTION_PLACEHOLDERS[name as keyof typeof RETENTION_PLACEHOLDERS];
+        return key ? formatPeriod(periods[key], locale.value) : match;
+      }
+    );
   }
 
   return { fill };

@@ -207,7 +207,7 @@ test.describe("data retention", () => {
 
     const privacyPolicy = await pb.collection("privacy_policies").create({
       content:
-        "<p>Closed after {RETENTION_INACTIVE}, warned {RETENTION_WARNING} before. Reservations: {RETENTION_RESERVATIONS}. Agreements: {RETENTION_CLOSED}. Codes: {RETENTION_ADDRESS_CODE}. Unknown: {RETENTION_OTHER}.</p>",
+        "<p>{LIBRARY_NAME}: closed after {RETENTION_INACTIVE}, warned {RETENTION_WARNING} before. Reservations: {RETENTION_RESERVATIONS}. Agreements: {RETENTION_CLOSED}. Codes: {RETENTION_ADDRESS_CODE}. Unknown: {RETENTION_OTHER}.</p>",
     });
     const leihbase = await getLeihbase();
     await pb
@@ -216,14 +216,14 @@ test.describe("data retention", () => {
     try {
       await page.goto("/privacy");
       await expect(page.getByTestId("agreement-content")).toHaveText(
-        "Closed after 2 years, warned 30 days before. Reservations: 2 years. Agreements: 6 years. Codes: 90 days. Unknown: {RETENTION_OTHER}."
+        `${leihbase.name.trim()}: closed after 2 years, warned 30 days before. Reservations: 2 years. Agreements: 6 years. Codes: 90 days. Unknown: {RETENTION_OTHER}.`
       );
 
       // Changing a period changes the privacy policy
       await setRetention({ retention_inactive_days: 1095 });
       await page.goto("/privacy");
       await expect(page.getByTestId("agreement-content")).toContainText(
-        "Closed after 3 years"
+        "closed after 3 years"
       );
     } finally {
       await pb
