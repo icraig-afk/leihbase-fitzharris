@@ -32,18 +32,41 @@
           data-testid="password-input"
           required
         />
+        <!-- The current privacy policy, or else the privacy policy link -->
         <Checkbox
-          v-if="leihbase.privacy_policy_link"
+          v-if="leihbase.privacy_policy || leihbase.privacy_policy_link"
           id="terms-and-conditions"
-          name="terms"
-          value="true"
+          :name="leihbase.privacy_policy ? 'privacy_policy' : 'terms'"
+          :value="leihbase.privacy_policy || 'true'"
           data-testid="tac-checkbox"
           required
           class="terms"
         >
           <i18n-t keypath="terms_and_conditions" tag="span">
-            <NuxtLink target="_blank" :to="leihbase.privacy_policy_link">{{
-              t("terms_and_conditions_link")
+            <NuxtLink
+              target="_blank"
+              :to="
+                leihbase.privacy_policy
+                  ? '/privacy'
+                  : leihbase.privacy_policy_link
+              "
+              >{{ t("terms_and_conditions_link") }}</NuxtLink
+            >
+          </i18n-t>
+        </Checkbox>
+        <!-- Borrowing terms of all locations -->
+        <Checkbox
+          v-if="leihbase.borrow_agreement"
+          id="borrowing-terms"
+          name="borrow_agreement"
+          :value="leihbase.borrow_agreement"
+          data-testid="borrowing-terms-checkbox"
+          required
+          class="terms"
+        >
+          <i18n-t keypath="borrowing_terms" tag="span">
+            <NuxtLink target="_blank" to="/borrowing-terms">{{
+              t("borrowing_terms_link")
             }}</NuxtLink>
           </i18n-t>
         </Checkbox>
@@ -177,6 +200,11 @@ async function handleSubmit(e: SubmitEvent) {
       signupError.value = t("errors.terms_required");
     } else if (
       e instanceof ClientResponseError &&
+      e.data?.message === "Borrow_agreement_required."
+    ) {
+      signupError.value = t("errors.borrowing_terms_required");
+    } else if (
+      e instanceof ClientResponseError &&
       e.data?.data?.message === "Captcha_invalid."
     ) {
       signupError.value = t("errors.captcha_invalid");
@@ -223,12 +251,15 @@ sl-alert::part(base) {
     "submit": "Sign up",
     "terms_and_conditions": "I have read and agree to the {0}, for the use of my personal data.",
     "terms_and_conditions_link": "data protection information",
+    "borrowing_terms": "I have read and agree to the {0}.",
+    "borrowing_terms_link": "borrowing terms",
 
     "errors": {
       "password_ength": "Password should be at least 8 characters long.",
       "invalid_email": "E-mail address is invalid or already in use.",
       "email_in_use": "There is already an account with this e-mail address.",
       "terms_required": "To proceed, you must agree to the data protection terms.",
+      "borrowing_terms_required": "To proceed, you must agree to the borrowing terms.",
       "captcha": "The website couldn't verify your request, please try again or contact us to resolve the issue.",
       "general": "An error occured during sign up, please try again."
     }
@@ -243,12 +274,15 @@ sl-alert::part(base) {
     "password": "Passwort",
     "terms_and_conditions": "Ich habe die {0}, zur Nutzung meiner personenbezogenen Daten gelesen und bin damit einverstanden.",
     "terms_and_conditions_link": "Datenschutzhinweisen",
+    "borrowing_terms": "Ich habe die {0} gelesen und bin damit einverstanden.",
+    "borrowing_terms_link": "Leihbedingungen",
     "submit": "Registrieren",
     "errors": {
       "password_length": "Dein Passwort sollte mindestens 8 Zeichen lang sein.",
       "invalid_email": "Die E-Mail ist ungültig oder wird bereits verwendet.",
       "email_in_use": "Es gibt bereits ein Konto mit dieser E-Mail-Adresse.",
       "terms_required": "Um fortzufahren, musst du den Datenschutzbestimmungen zustimmen.",
+      "borrowing_terms_required": "Um fortzufahren, musst du den Leihbedingungen zustimmen.",
       "captcha": "Die Website konnte deine Anfrage nicht verifizieren. Versuch's bitte nochmal oder kontaktiere uns, um das Problem zu klären.",
       "general": "Beim Erstellen deiner Account ist ein Fehler aufgetreten, bitte versuche es erneut."
     }

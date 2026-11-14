@@ -149,6 +149,9 @@ The single record in the `leihbase` collection contains instance-wide settings:
 - `description`, `image`: shown on the front page
 - `imprint`, `privacy_policy`: content of the imprint and privacy policy pages
 - `privacy_policy_link`: if set, users have to accept it when signing up
+- `privacy_policy`: the current privacy policy, edited in the admin section
+  (Instance settings, see [Privacy policy](#privacy-policy)). Replaces
+  `privacy_policy_link` when set
 - `footer_links`: links shown in the footer, in the same JSON format as location
   [links](#links)
 - `currency`: currency of deposits on the website and in emails, as an ISO 4217
@@ -204,7 +207,19 @@ the location.
 
 Borrowing terms for all locations are defined in the instance settings (Admin >
 Instance settings). They apply to every location without borrowing terms of its
-own, and users accept them once for all those locations.
+own, and users accept them once for all those locations: when signing up, or
+after they changed. They're shown on the `/borrowing-terms` page.
+
+#### Privacy policy
+
+The privacy policy can be written in the instance settings (Admin > Instance
+settings), and is shown on the `/privacy` page. Users accept it when signing up,
+and the accepted version is stored.
+
+When the privacy policy or the borrowing terms for all locations change, users
+are asked to review and accept the new version on their next visit, unless the
+change was saved as a minor edit. Without a privacy policy, the
+`privacy_policy_link` is used for sign-up, as before.
 
 With 'allow accepting later' enabled, users can reserve without accepting them,
 and accept them later or in the store. When the borrowing terms are changed,

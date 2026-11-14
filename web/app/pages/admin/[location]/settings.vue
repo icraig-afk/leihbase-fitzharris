@@ -129,9 +129,10 @@
             }}</Link>
           </i18n-t>
         </Alert>
-        <BorrowAgreementEditor
+        <AgreementEditor
           ref="borrowAgreementEditor"
-          :borrow-agreement="borrowAgreement"
+          kind="borrow_agreement"
+          :agreement="borrowAgreement"
           :location="location.id"
         />
         <Switch
@@ -187,7 +188,7 @@
 
 <script setup lang="ts">
 import AdminSection from "@/components/admin/AdminSection.vue";
-import BorrowAgreementEditor from "@/components/admin/BorrowAgreementEditor.vue";
+import AgreementEditor from "@/components/admin/AgreementEditor.vue";
 import Alert from "@/components/core/Alert.vue";
 import Button from "@/components/core/Button.vue";
 import Container from "@/components/core/Container.vue";
@@ -210,7 +211,7 @@ const { loading, update, errors } = usePocketbaseUpdate(pb, "location");
 const slug = route.params.location as string;
 const success = ref(false);
 const { leihbase } = useLeihbase();
-const borrowAgreementEditor = ref<InstanceType<typeof BorrowAgreementEditor>>();
+const borrowAgreementEditor = ref<InstanceType<typeof AgreementEditor>>();
 
 const location = await useLocation({
   slug,
@@ -258,7 +259,8 @@ async function handleSubmit(e: SubmitEvent) {
   try {
     // First store the borrow_agreement (when changed), then send the id of the (new) borrow agreement along
     if (borrowAgreementEditor.value) {
-      borrowAgreement.value = await borrowAgreementEditor.value.save();
+      borrowAgreement.value =
+        (await borrowAgreementEditor.value.save()) as BorrowAgreement | null;
     }
     data.set("borrow_agreement", borrowAgreement.value?.id || "");
     location.value = await update(location.value!.id, data);

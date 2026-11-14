@@ -18,4 +18,6 @@ export type Leihbase = RecordModel & {
    * of their own
    */
   borrow_agreement?: string;
+  /** Current privacy policy, replaces `privacy_policy_link` when set */
+  privacy_policy?: string;
 };

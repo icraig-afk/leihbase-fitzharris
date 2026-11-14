@@ -2,7 +2,7 @@
 
 onRecordUpdateRequest((e) => {
   // Fields admins (non-superusers) are allowed to update
-  const ADMIN_EDITABLE_FIELDS = ["borrow_agreement"];
+  const ADMIN_EDITABLE_FIELDS = ["borrow_agreement", "privacy_policy"];
 
   const { record } = e;
   if (!record) {
