@@ -220,6 +220,7 @@ Last checked against upstream on 2026-11-14.
 | `next` | Same as upstream: v2.7.0 plus the currency setting (unreleased) |
 | `main` | `next`, plus every branch below except where noted, plus the main-only changes listed further down |
 | `chore/local-docker-setup` | Fork-only, merged into `main` |
+| `chore/data-retention` | Fork-only (uses the neighbour verification's address codes): nightly data retention as in the privacy policy, and users closing their own account. Off until the `retention_*` periods are set. Not merged into `main` yet |
 | `chore/signup-borrower-terms` | **Retired**: its sign-up checkbox was removed from `main` in `ead8c5b`, replaced by the borrowing terms for all locations (below). `borrower_terms_accepted` stays on the users as history. The branch can be deleted |
 | `feat/instance-borrowing-terms` | Borrowing terms for all locations, with an instance settings page. Could go upstream: design proposed on [#73](https://github.com/leihbase/leihbase/issues/73), waiting for a reply. Merged into `main` |
 | `feat/privacy-policy-versions` | Versioned privacy policy, `/privacy` and `/borrowing-terms` pages, and asking users to accept again after changes. Based on `feat/instance-borrowing-terms`, so offer that one first. Same upstream status. Merged into `main` |

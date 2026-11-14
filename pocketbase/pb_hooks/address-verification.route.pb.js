@@ -19,7 +19,8 @@ routerAdd(
 
     const users = $app.findRecordsByFilter(
       "users",
-      'address_verified = false && role = "user"',
+      // Closed accounts (see lib/retention.js) no longer need a code
+      'address_verified = false && role = "user" && closed_at = ""',
       "created",
       0,
       0

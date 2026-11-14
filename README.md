@@ -159,6 +159,14 @@ The single record in the `leihbase` collection contains instance-wide settings:
 - `privacy_policy`: the current privacy policy, edited in the admin section
   (Instance settings, see [Privacy policy](#privacy-policy)). Replaces
   `privacy_policy_link` when set
+- `retention_inactive_days`, `retention_warning_days`,
+  `retention_reservation_days`, `retention_closed_days` (this fork only): data
+  retention periods in days, empty or 0 for off. Every night at 03:00, accounts
+  inactive for `retention_inactive_days` are closed, after a warning email
+  `retention_warning_days` before. Reservations are anonymised
+  `retention_reservation_days` after they ended, and closed accounts deleted
+  `retention_closed_days` after closing. Used and expired address codes are
+  always deleted. A summary goes to `CONFIG_MAIL_ALERT_WEBHOOK_URL`, if set
 - `footer_links`: links shown in the footer, in the same JSON format as location
   [links](#links)
 - `currency`: currency of deposits on the website and in emails, as an ISO 4217

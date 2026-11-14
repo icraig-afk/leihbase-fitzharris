@@ -9,6 +9,8 @@
 const EXEMPT_PATHS = [
   "/admin",
   "/profile/agreements",
+  // Fork-only: closing the account doesn't need accepting first
+  "/profile/close-account",
   "/privacy",
   "/borrowing-terms",
   "/login",

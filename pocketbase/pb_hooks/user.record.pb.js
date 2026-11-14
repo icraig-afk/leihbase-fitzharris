@@ -176,6 +176,23 @@ onRecordUpdateRequest((e) => {
     throw new BadRequestError("Borrower_terms_locked.");
   }
 
+  // Fork-only: the data retention fields (see lib/retention.js) are set by the
+  // server, or by a superuser
+  const RETENTION_FIELDS = [
+    "last_active",
+    "retention_warning_sent",
+    "closed_at",
+    "close_requested",
+  ];
+  if (
+    !e.hasSuperuserAuth() &&
+    RETENTION_FIELDS.some(
+      (field) => record.getString(field) !== original.getString(field)
+    )
+  ) {
+    throw new BadRequestError("Retention_fields_locked.");
+  }
+
   e.next();
 }, "users");
 

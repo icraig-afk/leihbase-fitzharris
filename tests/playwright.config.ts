@@ -72,10 +72,26 @@ export default defineConfig<ConfigOptions>({
       dependencies: ["API Tests", "Desktop Chrome", "Mobile Chrome"],
     },
     {
-      // Changes settings all other tests rely on, so runs after them
+      // Changes settings all other tests rely on, so runs after them. Also
+      // after "Mail alert", which breaks the mail server for a moment, as
+      // these tests send emails.
       name: "Shared settings",
       testDir: "./shared-settings",
-      dependencies: ["API Tests", "Desktop Chrome", "Mobile Chrome"],
+      dependencies: [
+        "API Tests",
+        "Desktop Chrome",
+        "Mobile Chrome",
+        "Mail alert",
+      ],
+    },
+    {
+      // Fork-only: data retention changes instance-wide settings and closes
+      // accounts, and logs in users, which the agreements in "Shared settings"
+      // would redirect. So runs after everything else.
+      name: "Data retention",
+      testDir: "./retention",
+      use: devices["Desktop Chrome"],
+      dependencies: ["Shared settings"],
     },
   ],
 
