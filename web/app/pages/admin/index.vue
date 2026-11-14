@@ -29,6 +29,11 @@
             </li>
           </ul>
         </div>
+        <div v-if="userStore.isAdmin">
+          <Button variant="secondary" to="/admin/settings">
+            {{ t("instance_settings") }}
+          </Button>
+        </div>
       </div>
     </div>
   </Container>
@@ -43,6 +48,7 @@ import PageAlert from "@/components/page-alert/PageAlert.vue";
 import type { Location } from "~~/models/location";
 
 const { leihbase } = useLeihbase();
+const userStore = useUserStore();
 
 useHead({
   title: `Admin | ${leihbase.name}`,
@@ -132,12 +138,14 @@ if (!locations.value || locations.value.length === 0) {
   "en": {
     "locations": "Locations",
     "active": "Active",
-    "inactive": "Inactive"
+    "inactive": "Inactive",
+    "instance_settings": "Instance settings"
   },
   "de": {
     "locations": "Standorte",
     "active": "Aktiv",
-    "inactive": "Inaktiv"
+    "inactive": "Inaktiv",
+    "instance_settings": "Instanz-Einstellungen"
   }
 }
 </i18n>
