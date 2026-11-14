@@ -213,14 +213,16 @@ branch.
 
 ## Where the branches stand
 
-Last checked against upstream on 2026-11-13.
+Last checked against upstream on 2026-11-14.
 
 | Branch | Status |
 | --- | --- |
 | `next` | Same as upstream: v2.7.0 plus the currency setting (unreleased) |
 | `main` | `next`, plus every branch below except where noted, plus the main-only changes listed further down |
 | `chore/local-docker-setup` | Fork-only, merged into `main` |
-| `chore/signup-borrower-terms` | Fork-only (Operating Policy & Borrower Agreement checkbox on sign-up), merged into `main`. Upstream's per-location borrowing terms ([#85](https://github.com/leihbase/leihbase/pull/85), v2.7.0) are now in `main` too: decide whether to move the Borrower Agreement there. Sign-up agreements ([#73](https://github.com/leihbase/leihbase/issues/73)) aren't upstream yet. Branched from `main`, so it also contains `main`'s other commits |
+| `chore/signup-borrower-terms` | **Retired**: its sign-up checkbox was removed from `main` in `ead8c5b`, replaced by the borrowing terms for all locations (below). `borrower_terms_accepted` stays on the users as history. The branch can be deleted |
+| `feat/instance-borrowing-terms` | Borrowing terms for all locations, with an instance settings page. Could go upstream: design proposed on [#73](https://github.com/leihbase/leihbase/issues/73), waiting for a reply. Merged into `main` |
+| `feat/privacy-policy-versions` | Versioned privacy policy, `/privacy` and `/borrowing-terms` pages, and asking users to accept again after changes. Based on `feat/instance-borrowing-terms`, so offer that one first. Same upstream status. Merged into `main` |
 | `feat/multi-location-search` | Could go upstream, merged into `main`. Needs `0092dde` (below) |
 | `feat/neighbour-verification` | Could go upstream (off by default), merged into `main`. Needs the v2.7.0 adjustments (below) |
 | `feat/mail-failure-alerts` | Could go upstream (off unless configured), merged into `main` |
@@ -261,6 +263,7 @@ related branch is offered upstream:
 | `e63e735` | Test: product page with categories | Offer along with `feat/multi-location-search` |
 | `66c0c56` | Test helper opens product pages directly: with the v2.7.0 tests, the test store has more products than fit on its first page | Could be offered upstream on its own |
 | `cf564c8` | Merge of v2.7.0, adapting neighbour verification to the new reservation dialog: the `User_address_not_verified.` error in `useCreateReservation.ts` and `i18n.config.ts`, and the address fields on the sign-up page next to the new `Checkbox` | Offering `feat/neighbour-verification`: the branch predates v2.7.0, so make the same changes there |
+| `ead8c5b` | Merge of the instance-wide agreements: sign-up keeps the address fields next to the new checkboxes, the user create hook stores the acceptances after the neighbour notification, and `tests/shared-settings/agreements.test.ts` signs up with an address | Offering `feat/neighbour-verification`: its sign-up fields and hook have to fit next to the agreements too |
 
 The `.gitattributes` fix (shell scripts keep LF line endings) is on `main`,
 `feat/multi-location-search` and `feat/neighbour-verification`, as two separate
