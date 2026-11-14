@@ -6,11 +6,6 @@ export type Leihbase = RecordModel & {
   description?: string;
   contact_link?: string;
   privacy_policy_link?: string;
-  /**
-   * Fork-only: link to the Operating Policy & Borrower Agreement, users have
-   * to accept it when signing up
-   */
-  borrower_terms_link?: string;
   footer_links?: {
     text: string;
     link: string;
@@ -23,4 +18,11 @@ export type Leihbase = RecordModel & {
   address_verification?: boolean;
   /** ISO 4217 code of the currency of deposits, "EUR" when empty */
   currency?: string;
+  /**
+   * Instance-wide borrow agreement, for locations without a borrow agreement
+   * of their own
+   */
+  borrow_agreement?: string;
+  /** Current privacy policy, replaces `privacy_policy_link` when set */
+  privacy_policy?: string;
 };

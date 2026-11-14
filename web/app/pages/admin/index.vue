@@ -36,6 +36,11 @@
             </li>
           </ul>
         </div>
+        <div v-if="userStore.isAdmin">
+          <Button variant="secondary" to="/admin/settings">
+            {{ t("instance_settings") }}
+          </Button>
+        </div>
       </div>
     </div>
   </Container>
@@ -141,13 +146,15 @@ if (!locations.value || locations.value.length === 0) {
     "locations": "Locations",
     "active": "Active",
     "inactive": "Inactive",
-    "neighbours": "Neighbour verification"
+    "neighbours": "Neighbour verification",
+    "instance_settings": "Instance settings"
   },
   "de": {
     "locations": "Standorte",
     "active": "Aktiv",
     "inactive": "Inaktiv",
-    "neighbours": "Nachbarschaftsprüfung"
+    "neighbours": "Nachbarschaftsprüfung",
+    "instance_settings": "Instanz-Einstellungen"
   }
 }
 </i18n>
