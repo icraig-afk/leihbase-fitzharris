@@ -34,6 +34,10 @@
         <!-- <Link href="/profile/change-email">{{ t("change_email") }}</Link> -->
         <!-- <br /> -->
         <Link to="/profile/change-password">{{ t("change_password") }}</Link>
+        <br />
+        <Link to="/profile/close-account" data-testid="close-account-link">{{
+          t("close_account")
+        }}</Link>
       </p>
     </Card>
   </Container>
@@ -96,6 +100,7 @@ p:last-child {
     "enter_code": "Enter your code",
     "change_email": "Update e-mail",
     "change_password": "Update password",
+    "close_account": "Close my account",
     "logout": "Logout"
   },
   "de": {
@@ -110,6 +115,7 @@ p:last-child {
     "enter_code": "Code eingeben",
     "change_email": "E-Mail Address ändern",
     "change_password": "Passwort ändern",
+    "close_account": "Mein Konto schließen",
     "logout": "Ausloggen"
   }
 }

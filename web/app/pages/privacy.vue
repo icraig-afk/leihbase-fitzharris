@@ -14,13 +14,21 @@ const { t } = useI18n({ useScope: "local" });
 const { pb } = usePocketbase();
 const { leihbase } = storeToRefs(useLeihbase());
 
+// Fork-only: the retention periods, as currently set
+const { fill } = useRetentionPlaceholders();
+
 // Current privacy policy
-const { data: privacyPolicy } = await useAsyncData("privacy_policy", () =>
-  leihbase.value?.privacy_policy
-    ? pb
-        .collection("privacy_policies")
-        .getOne<PrivacyPolicy>(leihbase.value.privacy_policy)
-    : Promise.resolve(null)
+const { data: privacyPolicy } = await useAsyncData(
+  "privacy_policy",
+  async () => {
+    if (!leihbase.value?.privacy_policy) {
+      return null;
+    }
+    const privacyPolicy = await pb
+      .collection("privacy_policies")
+      .getOne<PrivacyPolicy>(leihbase.value.privacy_policy);
+    return { ...privacyPolicy, content: await fill(privacyPolicy.content) };
+  }
 );
 
 if (!privacyPolicy.value) {

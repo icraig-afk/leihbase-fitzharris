@@ -14,13 +14,21 @@ const { t } = useI18n({ useScope: "local" });
 const { pb } = usePocketbase();
 const { leihbase } = storeToRefs(useLeihbase());
 
+// Fork-only: the retention periods, as currently set
+const { fill } = useRetentionPlaceholders();
+
 // Current borrowing terms of the instance, for all locations
-const { data: borrowAgreement } = await useAsyncData("borrowing_terms", () =>
-  leihbase.value?.borrow_agreement
-    ? pb
-        .collection("borrow_agreements")
-        .getOne<BorrowAgreement>(leihbase.value.borrow_agreement)
-    : Promise.resolve(null)
+const { data: borrowAgreement } = await useAsyncData(
+  "borrowing_terms",
+  async () => {
+    if (!leihbase.value?.borrow_agreement) {
+      return null;
+    }
+    const borrowAgreement = await pb
+      .collection("borrow_agreements")
+      .getOne<BorrowAgreement>(leihbase.value.borrow_agreement);
+    return { ...borrowAgreement, content: await fill(borrowAgreement.content) };
+  }
 );
 
 if (!borrowAgreement.value) {

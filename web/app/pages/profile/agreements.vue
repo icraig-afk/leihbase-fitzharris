@@ -95,9 +95,21 @@ if (!isValid.value || !userId) {
   await navigateTo({ path: "/login", query: { return: route.fullPath } });
 }
 
+// Fork-only: the retention periods, as currently set
+const { fill } = useRetentionPlaceholders();
+
 const { data: outstanding } = await useAsyncData(
   "agreements_outstanding",
-  () => (userId ? getOutstanding(userId) : Promise.resolve([]))
+  async () => {
+    if (!userId) {
+      return [];
+    }
+    const items = await getOutstanding(userId);
+    for (const item of items) {
+      item.agreement.content = await fill(item.agreement.content);
+    }
+    return items;
+  }
 );
 
 // Nothing to accept (anymore)
