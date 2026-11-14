@@ -22,6 +22,7 @@ function getSettings() {
     warningDays: days("retention_warning_days"),
     reservationDays: days("retention_reservation_days"),
     closedDays: days("retention_closed_days"),
+    requestDays: days("retention_request_days"),
   };
 }
 
@@ -178,6 +179,11 @@ function closeAccount(user) {
   })) {
     $app.delete(code);
   }
+
+  // Community requests (fork-only) of the account are no longer needed
+  /** @type {typeof import('./communityRequests')} */
+  const { closeRequestsOf } = require(`${__hooks}/lib/communityRequests`);
+  closeRequestsOf(record.id);
 }
 
 /**
@@ -263,6 +269,7 @@ function runRetention(now = new Date()) {
     closingSkipped: 0,
     reservationsAnonymised: 0,
     accountsDeleted: 0,
+    requestsDeleted: 0,
     errors: /** @type {string[]} */ ([]),
   };
 
@@ -419,6 +426,28 @@ function runRetention(now = new Date()) {
     }
   }
 
+  // 6. Community requests (fork-only): deleted a while after they closed,
+  // with their answers and emails
+  if (settings.requestDays > 0) {
+    for (const request of findAll(
+      "community_requests",
+      "status = 'closed' && closed_at != '' && closed_at < {:cutoff}",
+      "",
+      -1,
+      0,
+      {
+        cutoff: toFilterDate(
+          new Date(now.getTime() - settings.requestDays * DAY_MS)
+        ),
+      }
+    )) {
+      attempt(`delete community request ${request.id}`, () => {
+        $app.delete(request);
+        result.requestsDeleted++;
+      });
+    }
+  }
+
   return result;
 }
 
@@ -431,7 +460,7 @@ function formatSummary(result) {
   const lines = [
     `🧹 **Data retention** (${appName})`,
     `Accounts closed: ${result.accountsClosed}, warnings sent: ${result.warningsSent}, closed accounts deleted: ${result.accountsDeleted}`,
-    `Reservations anonymised: ${result.reservationsAnonymised}, address codes deleted: ${result.codesDeleted}`,
+    `Reservations anonymised: ${result.reservationsAnonymised}, address codes deleted: ${result.codesDeleted}, community requests deleted: ${result.requestsDeleted}`,
   ];
   if (result.closingSkipped > 0) {
     lines.push(
@@ -468,6 +497,7 @@ function getPeriods() {
     inactive: orNull(settings.inactiveDays),
     warning: orNull(settings.warningDays),
     reservations: orNull(settings.reservationDays),
+    requests: orNull(settings.requestDays),
     closed: orNull(settings.closedDays),
     address_code: orNull(CODE_VALID_DAYS),
     logs: orNull(appSettings.logs.maxDays),

@@ -10,4 +10,6 @@ export type User = RecordModel & {
   address_extra?: string;
   /** Whether the address was verified with a code sent by post */
   address_verified?: boolean;
+  /** Fork-only: no emails about community requests */
+  community_requests_opt_out?: boolean;
 };

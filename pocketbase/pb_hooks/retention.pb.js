@@ -20,6 +20,7 @@ cronAdd("data-retention", "0 3 * * *", () => {
       result.warningsSent +
       result.accountsDeleted +
       result.reservationsAnonymised +
+      result.requestsDeleted +
       result.closingSkipped >
     0;
   if (

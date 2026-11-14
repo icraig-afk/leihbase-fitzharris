@@ -9,6 +9,13 @@
           class="lb-richtext"
           v-html="leihbase.description"
         ></div>
+        <!-- Fork-only: community requests -->
+        <div v-if="isRequestsEnabled" class="ask">
+          <p>{{ t("ask_text") }}</p>
+          <Button to="/requests/new" data-testid="ask-community-button">
+            {{ t("ask") }}
+          </Button>
+        </div>
       </div>
 
       <div v-if="locations && locations.length > 0" class="locations lb-stack">
@@ -68,6 +75,7 @@ const {
 const { t } = useI18n({ useScope: "local" });
 const { pb } = usePocketbase();
 const { leihbase } = useLeihbase();
+const { isEnabled: isRequestsEnabled } = useCommunityRequests();
 
 const locations = await pb.collection("public_locations").getFullList({
   filter: "active = true",
@@ -95,6 +103,16 @@ useHead({
 
 <style lang="scss" scoped>
 @use "@/assets/styles/_breakpoints.scss";
+
+.ask {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  p {
+    margin: 0;
+  }
+}
 
 .container {
   display: flex;
@@ -173,11 +191,15 @@ useHead({
 <i18n lang="json">
 {
   "en": {
+    "ask": "Ask the community",
+    "ask_text": "Need something no location lists, like a couple of screws? Ask your neighbours.",
     "locations": "Locations",
     "search_label": "Search all locations",
     "search": "Search"
   },
   "de": {
+    "ask": "Die Nachbarschaft fragen",
+    "ask_text": "Du brauchst etwas, das kein Standort anbietet, z. B. ein paar Schrauben? Frag deine Nachbarschaft.",
     "locations": "Standorte",
     "search_label": "Alle Standorte durchsuchen",
     "search": "Suchen"

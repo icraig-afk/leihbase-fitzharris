@@ -29,6 +29,15 @@
           >.
         </span>
       </Alert>
+      <!-- Fork-only: community requests -->
+      <Switch
+        v-if="isRequestsEnabled && user?.address_verified"
+        id="community-requests-emails"
+        v-model="requestEmails"
+        :label="t('request_emails.label')"
+        :description="t('request_emails.description')"
+        data-testid="request-emails-switch"
+      />
       <Divider spacing="md" />
       <p>
         <!-- <Link href="/profile/change-email">{{ t("change_email") }}</Link> -->
@@ -52,9 +61,21 @@ import Divider from "@/components/core/Divider.vue";
 import Heading from "@/components/core/Heading.vue";
 import KeyValue from "@/components/core/KeyValue.vue";
 import Link from "@/components/core/Link.vue";
+import Switch from "@/components/core/Switch.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 
-const { isValid, user, logout } = usePocketbase();
+const { pb, isValid, user, logout } = usePocketbase();
+const { isEnabled: isRequestsEnabled } = useCommunityRequests();
+
+// Fork-only: emails about community requests, on unless opted out. Saved
+// straight away.
+const requestEmails = ref(!user.value?.community_requests_opt_out);
+watch(requestEmails, async (value) => {
+  if (!user.value?.id) return;
+  await pb
+    .collection("users")
+    .update(user.value.id, { community_requests_opt_out: !value });
+});
 const { leihbase } = useLeihbase();
 const userStore = useUserStore();
 const { t } = useI18n({
@@ -101,6 +122,10 @@ p:last-child {
     "change_email": "Update e-mail",
     "change_password": "Update password",
     "close_account": "Close my account",
+    "request_emails": {
+      "label": "Email me when neighbours ask for items",
+      "description": "When a neighbour asks the community for something, you get an email, and can say if you can help."
+    },
     "logout": "Logout"
   },
   "de": {
@@ -116,6 +141,10 @@ p:last-child {
     "change_email": "E-Mail Address ändern",
     "change_password": "Passwort ändern",
     "close_account": "Mein Konto schließen",
+    "request_emails": {
+      "label": "E-Mail, wenn die Nachbarschaft nach etwas fragt",
+      "description": "Wenn jemand aus der Nachbarschaft nach etwas fragt, bekommst du eine E-Mail und kannst sagen, ob du helfen kannst."
+    },
     "logout": "Ausloggen"
   }
 }

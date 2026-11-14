@@ -93,6 +93,15 @@ export default defineConfig<ConfigOptions>({
       use: devices["Desktop Chrome"],
       dependencies: ["Shared settings"],
     },
+    {
+      // Fork-only: community requests are switched on for the whole instance,
+      // and email every neighbour who takes part, so run after everything
+      // else
+      name: "Community requests",
+      testDir: "./community-requests",
+      use: devices["Desktop Chrome"],
+      dependencies: ["Data retention"],
+    },
   ],
 
   /* Run your local dev server before starting the tests */
