@@ -25,4 +25,9 @@ export type Leihbase = RecordModel & {
   borrow_agreement?: string;
   /** Current privacy policy, replaces `privacy_policy_link` when set */
   privacy_policy?: string;
+  /**
+   * Fork-only: address-verified neighbours can ask the community for items.
+   * Only works with `address_verification` on too.
+   */
+  community_requests?: boolean;
 };

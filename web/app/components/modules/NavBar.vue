@@ -49,6 +49,18 @@
                 {{ t("reservations") }}
               </NuxtLink>
             </li>
+            <!-- Fork-only: community requests -->
+            <li
+              v-if="
+                isValid &&
+                leihbase?.community_requests &&
+                leihbase?.address_verification
+              "
+            >
+              <NuxtLink to="/requests" data-testid="requests-link">
+                {{ t("requests") }}
+              </NuxtLink>
+            </li>
             <li v-if="isValid && userStore.isManager">
               <DropdownMenuItem :as="NuxtLink" to="/admin">
                 {{ t("admin") }}
@@ -216,6 +228,7 @@ header {
     "login": "Login",
     "profile": "Profile",
     "reservations": "Reservations",
+    "requests": "Requests",
     "admin": "Admin",
     "logout": "Logout"
   },
@@ -225,6 +238,7 @@ header {
     "login": "Einloggen",
     "profile": "Profil",
     "reservations": "Reservierungen",
+    "requests": "Anfragen",
     "admin": "Admin",
     "logout": "Ausloggen"
   }

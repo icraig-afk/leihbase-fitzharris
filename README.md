@@ -159,6 +159,16 @@ The single record in the `leihbase` collection contains instance-wide settings:
 - `privacy_policy`: the current privacy policy, edited in the admin section
   (Instance settings, see [Privacy policy](#privacy-policy)). Replaces
   `privacy_policy_link` when set
+- `community_requests` (this fork only): address-verified neighbours can ask the
+  community for an item no location lists, from the home page or `/requests`.
+  Needs `address_verification` on too. Neighbours who take part are emailed, and
+  answer yes or no from the email (no login) or the website; a yes sends the
+  helper's name, email address and note to the requester only. Members opt out
+  on their profile, or with the link in every request email.
+  `community_requests_daily_cap` limits the request emails a day (default 80,
+  the rest go out the next day), and `retention_request_days` deletes closed
+  requests (placeholder `{RETENTION_REQUESTS}`). Requests close after their "no
+  longer needed" date
 - `retention_inactive_days`, `retention_warning_days`,
   `retention_reservation_days`, `retention_closed_days` (this fork only): data
   retention periods in days, empty or 0 for off. Every night at 03:00, accounts

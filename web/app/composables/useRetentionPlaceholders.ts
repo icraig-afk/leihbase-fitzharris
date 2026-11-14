@@ -10,6 +10,7 @@ export const RETENTION_PLACEHOLDERS = {
   RETENTION_INACTIVE: "inactive",
   RETENTION_WARNING: "warning",
   RETENTION_RESERVATIONS: "reservations",
+  RETENTION_REQUESTS: "requests",
   RETENTION_CLOSED: "closed",
   RETENTION_ADDRESS_CODE: "address_code",
   RETENTION_LOGS: "logs",

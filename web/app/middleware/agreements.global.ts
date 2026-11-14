@@ -11,6 +11,9 @@ const EXEMPT_PATHS = [
   "/profile/agreements",
   // Fork-only: closing the account doesn't need accepting first
   "/profile/close-account",
+  // Fork-only: answering a community request, or opting out, from an email
+  "/requests/respond",
+  "/requests/unsubscribe",
   "/privacy",
   "/borrowing-terms",
   "/login",
