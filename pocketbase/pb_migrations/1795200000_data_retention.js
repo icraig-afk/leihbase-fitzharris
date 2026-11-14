@@ -93,6 +93,15 @@ migrate(
         help: "Tick to close this account during the next nightly run, e.g. when the user asked for it",
       })
     );
+    users.fields.add(
+      new Field({
+        id: "text1795200015",
+        name: "closed_email_hash",
+        type: "text",
+        hidden: true,
+        help: "SHA-256 of the lowercased email address of a closed account. Can't be turned back into the address, but matches it if the person gets in touch, e.g. about a dispute.",
+      })
+    );
     app.save(users);
 
     const reservations = app.findCollectionByNameOrId("h7plyphsy0mgjpf");
@@ -117,6 +126,7 @@ migrate(
       "date1795200012",
       "date1795200013",
       "bool1795200014",
+      "text1795200015",
     ]) {
       users.fields.removeById(id);
     }

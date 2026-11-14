@@ -134,6 +134,18 @@ function hasOpenReservation(userId) {
 }
 
 /**
+ * SHA-256 of the email address, lowercased and trimmed, as hex
+ * @param {string} email
+ */
+function hashEmail(email) {
+  return $security.sha256(
+    String(email || "")
+      .trim()
+      .toLowerCase()
+  );
+}
+
+/**
  * Closes the account: removes the personal data and makes logging in
  * impossible, but keeps the record, so the agreements it accepted (and its
  * reservations, until they are anonymised) still refer to it
@@ -141,6 +153,9 @@ function hasOpenReservation(userId) {
  */
 function closeAccount(user) {
   const record = $app.findRecordById("users", user.id);
+  // A one-way fingerprint of the email address, so the agreements of the
+  // closed account can still be matched to the person if they get in touch
+  record.set("closed_email_hash", hashEmail(record.getString("email")));
   record.set("name", "Closed account");
   record.setEmail(`closed-${record.id}@closed.invalid`);
   record.set("emailVisibility", false);
@@ -431,8 +446,39 @@ function formatSummary(result) {
   return lines.join("\n");
 }
 
+/**
+ * The retention periods for the privacy policy, in days, `null` when not
+ * used. Includes the address code validity, the PocketBase log retention and,
+ * with daily automatic backups, how many days of backups are kept.
+ */
+function getPeriods() {
+  /** @type {typeof import('./addressVerification')} */
+  const { CODE_VALID_DAYS } = require(`${__hooks}/lib/addressVerification`);
+  const settings = getSettings();
+  const appSettings = $app.settings();
+  /** @param {number} days */
+  const orNull = (days) => (days > 0 ? days : null);
+
+  // Daily backups ("M H * * *") keep one backup per day
+  const backupCron = String(appSettings.backups.cron || "").trim();
+  const isDaily = /^\S+ \S+ \* \* \*$/.test(backupCron);
+  const backupDays = isDaily ? orNull(appSettings.backups.cronMaxKeep) : null;
+
+  return {
+    inactive: orNull(settings.inactiveDays),
+    warning: orNull(settings.warningDays),
+    reservations: orNull(settings.reservationDays),
+    closed: orNull(settings.closedDays),
+    address_code: orNull(CODE_VALID_DAYS),
+    logs: orNull(appSettings.logs.maxDays),
+    backups: backupDays,
+  };
+}
+
 module.exports = {
   getSettings,
+  getPeriods,
+  hashEmail,
   recordActivity,
   getLastActivity,
   hasOpenReservation,

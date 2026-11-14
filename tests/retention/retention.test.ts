@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { expect, test } from "@playwright/test";
 import { ClientResponseError, type RecordModel } from "pocketbase";
 import { createBorrowAgreement } from "../lib/borrowAgreement";
@@ -166,6 +167,69 @@ test.describe("data retention", () => {
     await expect(
       pb.collection("borrow_agreement_acceptances").getOne(acceptance.id)
     ).resolves.toBeDefined();
+
+    // With a fingerprint of the email address, to find it again in a dispute
+    expect(closed.closed_email_hash).toBe(
+      createHash("sha256").update(user.email.toLowerCase()).digest("hex")
+    );
+    const found = await pb.send<
+      { id: string; borrow_agreements: { borrow_agreement: string }[] }[]
+    >("/api/retention/closed-accounts", {
+      query: { email: ` ${user.email.toUpperCase()} ` },
+    });
+    expect(found.map((account) => account.id)).toEqual([user.id]);
+    expect(found[0]!.borrow_agreements.map((a) => a.borrow_agreement)).toEqual([
+      borrowAgreement.id,
+    ]);
+
+    // Only for superusers
+    const other = await createUser();
+    const otherPb = await pocketbase(other.email, DEFAULT_PASSWORD, false);
+    await expect(
+      otherPb.send("/api/retention/closed-accounts", {
+        query: { email: user.email },
+      })
+    ).rejects.toThrow();
+  });
+
+  test("the privacy policy shows the retention periods as set", async ({
+    page,
+  }) => {
+    const pb = await pocketbase();
+    const periods = await pb.send("/api/retention/periods", {});
+    expect(periods).toMatchObject({
+      inactive: 730,
+      warning: 30,
+      reservations: 730,
+      closed: 2190,
+      address_code: 90,
+    });
+
+    const privacyPolicy = await pb.collection("privacy_policies").create({
+      content:
+        "<p>Closed after {RETENTION_INACTIVE}, warned {RETENTION_WARNING} before. Reservations: {RETENTION_RESERVATIONS}. Agreements: {RETENTION_CLOSED}. Codes: {RETENTION_ADDRESS_CODE}. Unknown: {RETENTION_OTHER}.</p>",
+    });
+    const leihbase = await getLeihbase();
+    await pb
+      .collection("leihbase")
+      .update(leihbase.id, { privacy_policy: privacyPolicy.id });
+    try {
+      await page.goto("/privacy");
+      await expect(page.getByTestId("agreement-content")).toHaveText(
+        "Closed after 2 years, warned 30 days before. Reservations: 2 years. Agreements: 6 years. Codes: 90 days. Unknown: {RETENTION_OTHER}."
+      );
+
+      // Changing a period changes the privacy policy
+      await setRetention({ retention_inactive_days: 1095 });
+      await page.goto("/privacy");
+      await expect(page.getByTestId("agreement-content")).toContainText(
+        "Closed after 3 years"
+      );
+    } finally {
+      await pb
+        .collection("leihbase")
+        .update(leihbase.id, { privacy_policy: "" });
+    }
   });
 
   test("activity after the warning cancels it", async () => {

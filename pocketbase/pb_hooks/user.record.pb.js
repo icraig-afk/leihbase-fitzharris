@@ -183,6 +183,7 @@ onRecordUpdateRequest((e) => {
     "retention_warning_sent",
     "closed_at",
     "close_requested",
+    "closed_email_hash",
   ];
   if (
     !e.hasSuperuserAuth() &&
