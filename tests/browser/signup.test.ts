@@ -26,8 +26,8 @@ test.describe("signup", () => {
     await page.getByTestId("submit-button").click();
     await expect(page.getByTestId("signup-error")).toHaveCount(0);
     // await page.screenshot({ path: "test.png", fullPage: true });
-    await page.waitForURL(/\/profile/);
-    await expect(page).toHaveURL("/profile");
+    // Without a page to return to: the homepage
+    await page.waitForURL((url) => url.pathname === "/");
   });
   test("requires accepting terms and conditions", async ({ page }) => {
     await page.goto("/signup");

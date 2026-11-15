@@ -21,7 +21,7 @@
               <DropdownMenuItem
                 :as="NuxtLink"
                 data-testid="signup-link"
-                to="/signup"
+                :to="{ path: '/signup', query: returnQuery }"
               >
                 {{ t("sign_up") }}
               </DropdownMenuItem>
@@ -30,7 +30,7 @@
               <DropdownMenuItem
                 :as="NuxtLink"
                 data-testid="login-link"
-                to="/login"
+                :to="{ path: '/login', query: returnQuery }"
               >
                 {{ t("login") }}
               </DropdownMenuItem>
@@ -69,6 +69,7 @@
 <script setup>
 import { Menu, User } from "@iconoir/vue";
 import { NuxtLink } from "#components";
+import { getReturnPath } from "~~/lib/returnPath";
 import Button from "../core/Button.vue";
 import DropdownMenu from "../core/dropdown-menu/DropdownMenu.vue";
 import DropdownMenuItem from "../core/dropdown-menu/DropdownMenuItem.vue";
@@ -82,6 +83,15 @@ const { t } = useI18n({
 const { isValid, logout } = usePocketbase();
 const userStore = useUserStore();
 const { leihbase } = storeToRefs(useLeihbase());
+const route = useRoute();
+
+// Return to the current page after logging in or signing up. On the login or
+// signup page itself, keep the page that one returns to.
+const returnQuery = computed(() => {
+  const path =
+    getReturnPath(route.fullPath) || getReturnPath(route.query.return);
+  return path ? { return: path } : {};
+});
 
 const header = ref();
 

@@ -5,7 +5,7 @@
         {{ t("title") }}
       </Heading>
       <i18n-t keypath="text" tag="p">
-        <NuxtLink to="/signup" data-testid="signup-link">
+        <NuxtLink :to="signupLink" data-testid="signup-link">
           {{ t("signup_text") }}
         </NuxtLink>
       </i18n-t>
@@ -35,7 +35,7 @@
           data-testid="login-error"
         >
           <i18n-t keypath="error" tag="span">
-            <NuxtLink to="/signup">{{ t("error_signup") }}</NuxtLink>
+            <NuxtLink :to="signupLink">{{ t("error_signup") }}</NuxtLink>
           </i18n-t>
         </Alert>
         <Button
@@ -49,7 +49,7 @@
       </form>
     </Card>
     <footer>
-      <a href="/signup">{{ t("signup") }}</a>
+      <NuxtLink :to="signupLink">{{ t("signup") }}</NuxtLink>
       •
       <a href="/reset-password">{{ t("forgot_password") }}</a>
     </footer>
@@ -64,6 +64,7 @@ import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import Input from "@/components/core/Input.vue";
 import { PageAlertType } from "@/components/page-alert/PageAlert.model";
+import { getReturnPath } from "~~/lib/returnPath";
 import type { User } from "~~/models/user";
 
 useHead({
@@ -82,11 +83,18 @@ const password = ref(null);
 const loading = ref(false);
 const authenticationError = ref(false);
 
-// If the 'return' query parameter is set in the url,
-// set the authentication intent
-if (route.query.return) {
-  userStore.setAuthenticationIntent(null, route.query.return as string);
+// If the 'return' query parameter is set in the url, set the authentication
+// intent. Only pages of this website, see getReturnPath.
+const returnPath = getReturnPath(route.query.return);
+if (returnPath) {
+  userStore.setAuthenticationIntent(null, returnPath);
 }
+
+// Keep the page to return to when switching to signing up
+const signupLink = computed(() => ({
+  path: "/signup",
+  query: returnPath ? { return: returnPath } : {},
+}));
 
 async function onLogin() {
   authenticationError.value = false;
@@ -114,8 +122,9 @@ async function onLogin() {
       }
       navigateTo(path);
     } else {
+      // No page to return to: the homepage
       userStore.showBanner(PageAlertType.AFTER_LOGIN);
-      navigateTo("/profile");
+      navigateTo("/");
     }
   }
 }
