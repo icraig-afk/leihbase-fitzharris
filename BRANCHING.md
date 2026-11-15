@@ -220,6 +220,7 @@ Last checked against upstream on 2026-11-14.
 | `next` | Same as upstream: v2.7.0 plus the currency setting (unreleased) |
 | `main` | `next`, plus every branch below except where noted, plus the main-only changes listed further down |
 | `chore/local-docker-setup` | Fork-only, merged into `main` |
+| `feat/faq` | FAQ page (`/faq`) managed on `/admin/faq`. Could go upstream: proposed in [#92](https://github.com/leihbase/leihbase/issues/92), waiting for a reply. Merged into `main`, where answers also support the `{LIBRARY_NAME}` and `{RETENTION_…}` placeholders (main-only change, below) |
 | `chore/community-requests` | Fork-only (needs neighbour verification): neighbours ask the community for items no location lists, answered from the email or `/requests`. Off until `community_requests` is set. Merged into `main` |
 | `chore/data-retention` | Fork-only (uses the neighbour verification's address codes): nightly data retention as in the privacy policy, and users closing their own account. Off until the `retention_*` periods are set. Also the email fingerprint of closed accounts, and the `{RETENTION_…}` placeholders, which changed the fork's `privacy.vue`, `borrowing-terms.vue` and `profile/agreements.vue`. Merged into `main` |
 | `chore/signup-borrower-terms` | **Retired**: its sign-up checkbox was removed from `main` in `ead8c5b`, replaced by the borrowing terms for all locations (below). `borrower_terms_accepted` stays on the users as history. The branch can be deleted |
@@ -266,6 +267,7 @@ related branch is offered upstream:
 | `66c0c56` | Test helper opens product pages directly: with the v2.7.0 tests, the test store has more products than fit on its first page | Could be offered upstream on its own |
 | `cf564c8` | Merge of v2.7.0, adapting neighbour verification to the new reservation dialog: the `User_address_not_verified.` error in `useCreateReservation.ts` and `i18n.config.ts`, and the address fields on the sign-up page next to the new `Checkbox` | Offering `feat/neighbour-verification`: the branch predates v2.7.0, so make the same changes there |
 | `ead8c5b` | Merge of the instance-wide agreements: sign-up keeps the address fields next to the new checkboxes, the user create hook stores the acceptances after the neighbour notification, and `tests/shared-settings/agreements.test.ts` signs up with an address | Offering `feat/neighbour-verification`: its sign-up fields and hook have to fit next to the agreements too |
+| FAQ placeholders (after `Merge feat/faq into main`) | `/faq` fills the `{LIBRARY_NAME}` and `{RETENTION_…}` placeholders in answers, and `/admin/faq` lists them; tested in `tests/retention/retention.test.ts` | Fork-only: not part of `feat/faq`. Keep it when upstream's version of the FAQ comes back through `next` |
 
 The `.gitattributes` fix (shell scripts keep LF line endings) is on `main`,
 `feat/multi-location-search` and `feat/neighbour-verification`, as two separate

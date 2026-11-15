@@ -398,4 +398,24 @@ test.describe("data retention", () => {
     expect(closed.closed_at).not.toBe("");
     expect(closed.email).toBe(`closed-${user.id}@closed.invalid`);
   });
+
+  test("FAQ answers show the placeholders as set", async ({ page }) => {
+    const pb = await pocketbase();
+    const leihbase = await getLeihbase();
+    const faq = await pb.collection("faqs").create({
+      question: "How long do you keep my account?",
+      answer:
+        "<p>{LIBRARY_NAME} closes accounts after {RETENTION_INACTIVE} without activity.</p>",
+      published: true,
+    });
+    try {
+      await page.goto(`/faq#${faq.slug}`);
+      await waitForHydration(page);
+      await expect(page.getByTestId("faq-answer").first()).toContainText(
+        `${leihbase.name.trim()} closes accounts after 2 years without activity.`
+      );
+    } finally {
+      await pb.collection("faqs").delete(faq.id);
+    }
+  });
 });

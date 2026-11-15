@@ -16,6 +16,17 @@
           t("view")
         }}</NuxtLink>
       </p>
+      <!-- Fork-only: placeholders in answers -->
+      <p class="placeholders" data-testid="faq-placeholders">
+        {{ t("placeholders") }}
+        <template
+          v-for="(placeholder, index) in POLICY_PLACEHOLDERS"
+          :key="placeholder"
+        >
+          <code>{{ placeholder }}</code
+          >{{ index < POLICY_PLACEHOLDERS.length - 1 ? ", " : "." }}
+        </template>
+      </p>
     </div>
 
     <Alert v-if="error" variant="error">{{ t("error") }}</Alert>
@@ -168,6 +179,7 @@ import Link from "@/components/core/Link.vue";
 import RichTextarea from "@/components/core/RichTextarea.vue";
 import Switch from "@/components/core/Switch.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
+import { POLICY_PLACEHOLDERS } from "@/composables/useRetentionPlaceholders";
 import type { Faq } from "~~/models/faq";
 
 const { t } = useI18n({ useScope: "local" });
@@ -278,6 +290,12 @@ function add() {
   margin: 0;
   max-width: 40rem;
 }
+.placeholders {
+  margin: 0;
+  max-width: 40rem;
+  color: var(--text-color-light);
+  font-size: var(--font-size-sm);
+}
 /* Like the Link component, which doesn't support opening in a new tab */
 .link {
   color: var(--text-color);
@@ -331,6 +349,7 @@ function add() {
     "back": "Back to the admin",
     "intro": "Answers to common questions, shown to everyone on the FAQ page once published.",
     "view": "View the FAQ page",
+    "placeholders": "Answers can use these placeholders, which show the name of the library and the data retention periods as currently set:",
     "question": "Question",
     "answer": "Answer",
     "published": "Published",
@@ -352,6 +371,7 @@ function add() {
     "back": "Zurück zur Verwaltung",
     "intro": "Antworten auf häufige Fragen, die nach dem Veröffentlichen allen auf der FAQ-Seite angezeigt werden.",
     "view": "FAQ-Seite ansehen",
+    "placeholders": "Antworten können diese Platzhalter verwenden, die den Namen der Bibliothek und die aktuell eingestellten Aufbewahrungsfristen anzeigen:",
     "question": "Frage",
     "answer": "Antwort",
     "published": "Veröffentlicht",

@@ -58,13 +58,21 @@ const router = useRouter();
 
 useHead({ title: t("title") });
 
+// Fork-only: answers can use the {LIBRARY_NAME} and {RETENTION_…}
+// placeholders, like the privacy policy
+const { fill } = useRetentionPlaceholders();
+
 // Published questions only, also for admins (who can see drafts)
-const { data: faqs } = await useAsyncData("faqs", () =>
-  pb.collection("faqs").getFullList<Faq>({
+const { data: faqs } = await useAsyncData("faqs", async () => {
+  const faqs = await pb.collection("faqs").getFullList<Faq>({
     filter: "published = true",
     sort: "position,created",
-  })
-);
+  });
+  for (const faq of faqs) {
+    faq.answer = await fill(faq.answer);
+  }
+  return faqs;
+});
 
 // Ids of the open questions
 const open = ref<string[]>([]);
