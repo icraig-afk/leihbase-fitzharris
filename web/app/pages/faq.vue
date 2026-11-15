@@ -7,7 +7,17 @@
   <Container width="md" centered>
     <PageAlert />
     <section class="lb-stack">
-      <Heading is="h1" size="xl">{{ t("title") }}</Heading>
+      <div class="heading">
+        <Heading is="h1" size="xl">{{ t("title") }}</Heading>
+        <Button
+          v-if="userStore.isAdmin"
+          variant="secondary"
+          to="/admin/faq"
+          data-testid="faq-manage"
+        >
+          {{ t("manage") }}
+        </Button>
+      </div>
       <Accordion
         v-if="faqs && faqs.length > 0"
         v-model:open="open"
@@ -34,8 +44,8 @@
           </AccordionItem>
         </div>
       </Accordion>
-      <p v-else>
-        <i>{{ t("empty") }}</i>
+      <p v-else data-testid="faq-empty">
+        <i>{{ userStore.isAdmin ? t("empty_admin") : t("empty") }}</i>
       </p>
     </section>
   </Container>
@@ -46,6 +56,7 @@ import Accordion from "@/components/core/accordion/Accordion.vue";
 import AccordionContent from "@/components/core/accordion/AccordionContent.vue";
 import AccordionItem from "@/components/core/accordion/AccordionItem.vue";
 import AccordionTrigger from "@/components/core/accordion/AccordionTrigger.vue";
+import Button from "@/components/core/Button.vue";
 import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
@@ -55,6 +66,7 @@ const { t } = useI18n({ useScope: "local" });
 const { pb } = usePocketbase();
 const route = useRoute();
 const router = useRouter();
+const userStore = useUserStore();
 
 useHead({ title: t("title") });
 
@@ -111,6 +123,13 @@ watch(open, (now, before) => {
 </script>
 
 <style scoped>
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-3);
+}
 .faqs {
   max-width: var(--max-text-width, 48rem);
 }
@@ -126,11 +145,15 @@ watch(open, (now, before) => {
 {
   "en": {
     "title": "Frequently asked questions",
-    "empty": "No questions yet."
+    "empty": "No questions yet.",
+    "empty_admin": "No questions published yet. Add the first ones with \"Manage questions\". Visitors see the FAQ link in the menu once a question is published.",
+    "manage": "Manage questions"
   },
   "de": {
     "title": "Häufige Fragen",
-    "empty": "Noch keine Fragen."
+    "empty": "Noch keine Fragen.",
+    "empty_admin": "Noch keine Fragen veröffentlicht. Füge die ersten über \"Fragen verwalten\" hinzu. Besucher:innen sehen den FAQ-Link im Menü, sobald eine Frage veröffentlicht ist.",
+    "manage": "Fragen verwalten"
   }
 }
 </i18n>

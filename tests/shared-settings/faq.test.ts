@@ -177,6 +177,33 @@ test.describe("FAQ", () => {
     await expect(rows.nth(0)).toContainText("Existing question?");
   });
 
+  test("admins always see the FAQ link, visitors once a question is published", async ({
+    page,
+    browser,
+  }) => {
+    // No questions: visitors don't see the link
+    const visitor = await browser.newPage();
+    await visitor.goto("/");
+    await waitForHydration(visitor);
+    await waitForClientMount(visitor.getByTestId("menu-button"));
+    await visitor.getByTestId("menu-button").click();
+    await expect(visitor.getByTestId("login-link")).toBeVisible();
+    await expect(visitor.getByTestId("faq-link")).toHaveCount(0);
+    await visitor.close();
+
+    // Admins do, and get to managing the questions
+    const admin = await createUser(undefined, undefined, "admin");
+    await login(page, admin.email, DEFAULT_PASSWORD);
+    await waitForClientMount(page.getByTestId("menu-button"));
+    await page.getByTestId("menu-button").click();
+    await page.getByTestId("faq-link").click();
+    await page.waitForURL("/faq");
+    await waitForHydration(page);
+    await expect(page.getByTestId("faq-empty")).toBeVisible();
+    await page.getByTestId("faq-manage").click();
+    await page.waitForURL("/admin/faq");
+  });
+
   test("other users can't open the admin page", async ({ page }) => {
     const user = await createUser();
     await login(page, user.email, DEFAULT_PASSWORD);
