@@ -146,8 +146,8 @@ import Heading from "@/components/core/Heading.vue";
 import Input from "@/components/core/Input.vue";
 import Select from "@/components/core/Select.vue";
 import { PageAlertType } from "@/components/page-alert/PageAlert.model";
-import type { Street } from "~~/models/street";
 import { getReturnPath } from "~~/lib/returnPath";
+import type { Street } from "~~/models/street";
 import type { User } from "~~/models/user";
 import { ClientResponseError } from "pocketbase";
 
