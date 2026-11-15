@@ -77,6 +77,8 @@ export default defineConfig<ConfigOptions>({
       // these tests send emails.
       name: "Shared settings",
       testDir: "./shared-settings",
+      // Fork-only: the agreements run on their own, see "Agreements"
+      testIgnore: /agreements\.test\.ts/,
       dependencies: [
         "API Tests",
         "Desktop Chrome",
@@ -85,13 +87,22 @@ export default defineConfig<ConfigOptions>({
       ],
     },
     {
+      // Fork-only: the instance-wide agreements redirect logged in users to
+      // accept them, which would break other tests logging in at the same
+      // time (e.g. the FAQ's). So they run after "Shared settings".
+      name: "Agreements",
+      testDir: "./shared-settings",
+      testMatch: /agreements\.test\.ts/,
+      dependencies: ["Shared settings"],
+    },
+    {
       // Fork-only: data retention changes instance-wide settings and closes
-      // accounts, and logs in users, which the agreements in "Shared settings"
-      // would redirect. So runs after everything else.
+      // accounts, and logs in users, which the agreements would redirect. So
+      // runs after everything else.
       name: "Data retention",
       testDir: "./retention",
       use: devices["Desktop Chrome"],
-      dependencies: ["Shared settings"],
+      dependencies: ["Agreements"],
     },
     {
       // Fork-only: community requests are switched on for the whole instance,
