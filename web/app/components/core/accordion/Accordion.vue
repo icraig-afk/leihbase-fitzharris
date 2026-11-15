@@ -12,19 +12,16 @@ const { single } = defineProps<{
   single?: boolean;
 }>();
 
-const open = ref<string[]>([]);
+// Ids of the open items. Optionally bound with `v-model:open`, e.g. to open an
+// item from the URL.
+const open = defineModel<string[]>("open", { default: () => [] });
 
 function toggle(id: string) {
-  const index = open.value.indexOf(id);
-  if (index === -1) {
-    if (single) {
-      open.value = [id];
-    } else {
-      open.value.push(id);
-    }
+  if (!open.value.includes(id)) {
+    open.value = single ? [id] : [...open.value, id];
     return;
   }
-  open.value.splice(index, 1);
+  open.value = open.value.filter((openId) => openId !== id);
 }
 
 provide(openKey, open);
