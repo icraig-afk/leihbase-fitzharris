@@ -5,7 +5,7 @@
         {{ t("title") }}
       </Heading>
       <i18n-t keypath="text" tag="p">
-        <NuxtLink to="/login">{{ t("login_text") }}</NuxtLink>
+        <NuxtLink :to="loginLink">{{ t("login_text") }}</NuxtLink>
       </i18n-t>
       <form @submit.prevent="handleSubmit" method="post">
         <Input
@@ -147,6 +147,7 @@ import Input from "@/components/core/Input.vue";
 import Select from "@/components/core/Select.vue";
 import { PageAlertType } from "@/components/page-alert/PageAlert.model";
 import type { Street } from "~~/models/street";
+import { getReturnPath } from "~~/lib/returnPath";
 import type { User } from "~~/models/user";
 import { ClientResponseError } from "pocketbase";
 
@@ -154,6 +155,20 @@ const { t } = useI18n({ useScope: "local" });
 const { pb, login } = usePocketbase();
 const userStore = useUserStore();
 const { leihbase } = useLeihbase();
+const route = useRoute();
+
+// The page to return to after signing up, from the 'return' query parameter.
+// Only pages of this website, see getReturnPath.
+const returnPath = getReturnPath(route.query.return);
+if (returnPath) {
+  userStore.setAuthenticationIntent(null, returnPath);
+}
+
+// Keep the page to return to when switching to logging in
+const loginLink = computed(() => ({
+  path: "/login",
+  query: returnPath ? { return: returnPath } : {},
+}));
 
 const {
   public: { cap },
@@ -226,12 +241,13 @@ async function handleSubmit(e: SubmitEvent) {
       }
       navigateTo(path);
     } else {
+      // No page to return to: the homepage
       userStore.showBanner(
         leihbase.address_verification
           ? PageAlertType.AFTER_SIGNUP_ADDRESS_VERIFICATION
           : PageAlertType.AFTER_SIGNUP
       );
-      navigateTo("/profile");
+      navigateTo("/");
     }
   } catch (e) {
     console.log(e);

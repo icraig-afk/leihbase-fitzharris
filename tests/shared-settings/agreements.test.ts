@@ -328,7 +328,8 @@ test.describe("instance-wide borrowing terms", () => {
     ).toContainText("at every location");
     await userPage.getByTestId("accept-borrow_agreement").check();
     await userPage.getByTestId("accept-agreements").click();
-    await userPage.waitForURL("/profile");
+    // Logged in without a page to return to: the homepage
+    await userPage.waitForURL((url) => url.pathname === "/");
     expect(await getBorrowAgreementAcceptances(user.id)).toHaveLength(1);
 
     // Reserving doesn't ask for them again
@@ -472,7 +473,8 @@ test.describe("privacy policy", () => {
     await page.getByTestId("tac-checkbox").check();
     await page.getByTestId("borrowing-terms-checkbox").check();
     await page.getByTestId("submit-button").click();
-    await page.waitForURL("/profile");
+    // Signed up without a page to return to: the homepage
+    await page.waitForURL((url) => url.pathname === "/");
 
     const pb = await pocketbase();
     const user = await pb
