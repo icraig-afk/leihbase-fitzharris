@@ -220,6 +220,7 @@ Last checked against upstream on 2026-11-14.
 | `next` | Same as upstream: v2.7.0 plus the currency setting (unreleased) |
 | `main` | `next`, plus every branch below except where noted, plus the main-only changes listed further down |
 | `chore/local-docker-setup` | Fork-only, merged into `main` |
+| `feat/login-return` | Logging in or signing up returns to the page you were on (or the homepage), instead of the profile. Could go upstream. Merged into `main`, where the fork's sign-up keeps its neighbour verification banner, and `agreements.test.ts` expects the homepage |
 | `feat/faq` | FAQ page (`/faq`) managed on `/admin/faq`. Could go upstream: proposed in [#92](https://github.com/leihbase/leihbase/issues/92), waiting for a reply. Merged into `main`, where answers also support the `{LIBRARY_NAME}` and `{RETENTION_…}` placeholders (main-only change, below) |
 | `chore/community-requests` | Fork-only (needs neighbour verification): neighbours ask the community for items no location lists, answered from the email or `/requests`. Off until `community_requests` is set. Merged into `main` |
 | `chore/data-retention` | Fork-only (uses the neighbour verification's address codes): nightly data retention as in the privacy policy, and users closing their own account. Off until the `retention_*` periods are set. Also the email fingerprint of closed accounts, and the `{RETENTION_…}` placeholders, which changed the fork's `privacy.vue`, `borrowing-terms.vue` and `profile/agreements.vue`. Merged into `main` |
