@@ -47,6 +47,14 @@
     >
       {{ t("neighbours") }}
     </Button>
+    <Button
+      v-if="userStore.isAdmin"
+      variant="secondary"
+      to="/admin/faq"
+      data-testid="admin-nav-faq"
+    >
+      {{ t("faq") }}
+    </Button>
   </HorizontalScroll>
 </template>
 
@@ -103,6 +111,7 @@ function isActive(page: string) {
     "statistics": "Statistics",
     "opening_hours": "Opening hours",
     "settings": "Settings",
+    "faq": "FAQ",
     "email_templates": "Email Templates",
     "neighbours": "Neighbours"
   },
@@ -112,6 +121,7 @@ function isActive(page: string) {
     "statistics": "Statistieken",
     "opening_hours": "Öffnungszeiten",
     "settings": "Einstellungen",
+    "faq": "FAQ",
     "email_templates": "E-Mail-Vorlagen",
     "neighbours": "Nachbarschaft"
   }

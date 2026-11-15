@@ -61,6 +61,11 @@
                 {{ t("requests") }}
               </NuxtLink>
             </li>
+            <li v-if="hasFaqs">
+              <DropdownMenuItem :as="NuxtLink" data-testid="faq-link" to="/faq">
+                {{ t("faq") }}
+              </DropdownMenuItem>
+            </li>
             <li v-if="isValid && userStore.isManager">
               <DropdownMenuItem :as="NuxtLink" to="/admin">
                 {{ t("admin") }}
@@ -91,9 +96,23 @@ import { PageAlertType } from "../page-alert/PageAlert.model.js";
 const { t } = useI18n({
   useScope: "local",
 });
-const { isValid, logout } = usePocketbase();
+const { pb, isValid, logout } = usePocketbase();
 const userStore = useUserStore();
 const { leihbase } = storeToRefs(useLeihbase());
+
+// Show the FAQ link once a question is published
+const { data: hasFaqs } = useAsyncData("navbar_has_faqs", () =>
+  pb
+    .collection("faqs")
+    .getList(1, 1, {
+      filter: "published = true",
+      fields: "id",
+      skipTotal: true,
+      requestKey: null,
+    })
+    .then((result) => result.items.length > 0)
+    .catch(() => false)
+);
 
 const header = ref();
 
@@ -229,6 +248,7 @@ header {
     "profile": "Profile",
     "reservations": "Reservations",
     "requests": "Requests",
+    "faq": "FAQ",
     "admin": "Admin",
     "logout": "Logout"
   },
@@ -239,6 +259,7 @@ header {
     "profile": "Profil",
     "reservations": "Reservierungen",
     "requests": "Anfragen",
+    "faq": "FAQ",
     "admin": "Admin",
     "logout": "Ausloggen"
   }

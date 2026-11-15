@@ -10,6 +10,7 @@ people can borrow items instead of buying them.
 - 🎫 Online reservations, with user sign-up/login
 - 📜 Borrowing terms for all locations or per location, accepted online or in
   the store
+- ❓ A FAQ page, managed by admins (Admin > FAQ)
 - 👷 Admin section to manage products, reservations and statistics across
   multiple locations
 - 📧 Email confirmations and pickup/return reminders, with customizable
