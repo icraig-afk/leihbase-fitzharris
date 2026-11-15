@@ -49,7 +49,8 @@
                 {{ t("reservations") }}
               </NuxtLink>
             </li>
-            <li v-if="hasFaqs">
+            <!-- Admins always see it, to add the first questions -->
+            <li v-if="hasFaqs || userStore.isAdmin">
               <DropdownMenuItem :as="NuxtLink" data-testid="faq-link" to="/faq">
                 {{ t("faq") }}
               </DropdownMenuItem>
