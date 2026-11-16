@@ -111,7 +111,8 @@ type Delivery = {
   note: string;
 };
 
-const { t, locale } = useI18n({ useScope: "local" });
+const { t } = useI18n({ useScope: "local" });
+const dateLocale = useDateLocale();
 const route = useRoute();
 const { pb } = usePocketbase();
 
@@ -145,11 +146,15 @@ const error = ref<string>();
 const needed = computed(() =>
   request.value
     ? t("needed", {
-        from: formatDate(request.value.needed_from, "DD.MM.YYYY", locale.value),
+        from: formatDate(
+          request.value.needed_from,
+          "DD.MM.YYYY",
+          dateLocale.value
+        ),
         until: formatDate(
           request.value.needed_until,
           "DD.MM.YYYY",
-          locale.value
+          dateLocale.value
         ),
       })
     : ""

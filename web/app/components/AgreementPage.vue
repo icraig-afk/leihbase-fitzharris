@@ -11,7 +11,7 @@
       <p v-if="agreement.updated" class="updated">
         {{
           t("updated", {
-            date: formatDate(agreement.updated, "DD MMM YYYY", locale),
+            date: formatDate(agreement.updated, "DD MMM YYYY", dateLocale),
           })
         }}
       </p>
@@ -35,7 +35,8 @@ const props = defineProps<{
   agreement: { content: string; updated?: string };
 }>();
 
-const { t, locale } = useI18n({ useScope: "local" });
+const { t } = useI18n({ useScope: "local" });
+const dateLocale = useDateLocale();
 
 useHead({ title: props.title });
 </script>
