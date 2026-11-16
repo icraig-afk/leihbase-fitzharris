@@ -75,24 +75,24 @@ services:
 
 `leihbase-webapp`:
 
-| Variable                                 | Description                                                                   |
-| ---------------------------------------- | ----------------------------------------------------------------------------- |
-| `NUXT_PUBLIC_LOCALE`                     | Language of the front-end: `en` or `de`                                       |
-| `NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL` | URL used by the webapp server to reach PocketBase (e.g. the internal network) |
-| `NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL` | Public URL used by the browser to reach PocketBase                            |
-| `NUXT_PUBLIC_PLAUSIBLE_TRACKING_DOMAIN`  | Optional, enables [Plausible](https://plausible.io/) analytics                |
-| `NUXT_PUBLIC_CAP_INSTANCE_HOST`          | Optional, [Cap](https://trycap.dev) captcha instance host                     |
-| `NUXT_PUBLIC_CAP_SITE_KEY`               | Optional, Cap captcha site key                                                |
+| Variable                                 | Description                                                                           |
+| ---------------------------------------- | ------------------------------------------------------------------------------------- |
+| `NUXT_PUBLIC_LOCALE`                     | Language of the front-end: `en` or `de`, optionally with a region for dates (`en-GB`) |
+| `NUXT_PUBLIC_POCKETBASE_SERVER_BASE_URL` | URL used by the webapp server to reach PocketBase (e.g. the internal network)         |
+| `NUXT_PUBLIC_POCKETBASE_CLIENT_BASE_URL` | Public URL used by the browser to reach PocketBase                                    |
+| `NUXT_PUBLIC_PLAUSIBLE_TRACKING_DOMAIN`  | Optional, enables [Plausible](https://plausible.io/) analytics                        |
+| `NUXT_PUBLIC_CAP_INSTANCE_HOST`          | Optional, [Cap](https://trycap.dev) captcha instance host                             |
+| `NUXT_PUBLIC_CAP_SITE_KEY`               | Optional, Cap captcha site key                                                        |
 
 `leihbase-pb`:
 
-| Variable                          | Description                                                                      |
-| --------------------------------- | -------------------------------------------------------------------------------- |
-| `CONFIG_LOCALE`                   | Language of the emails: `en` or `de`                                             |
-| `CONFIG_RESERVATION_REQUIRE_USER` | If a reservation created in the admin section is required to be linked to a user |
-| `CONFIG_CAP_INSTANCE_HOST`        | Optional, Cap captcha instance host                                              |
-| `CONFIG_CAP_SITE_KEY`             | Optional, Cap captcha site key                                                   |
-| `CONFIG_CAP_SECRET_KEY`           | Optional, Cap captcha secret key                                                 |
+| Variable                          | Description                                                                        |
+| --------------------------------- | ---------------------------------------------------------------------------------- |
+| `CONFIG_LOCALE`                   | Language of the emails: `en` or `de`, optionally with a region for dates (`en-GB`) |
+| `CONFIG_RESERVATION_REQUIRE_USER` | If a reservation created in the admin section is required to be linked to a user   |
+| `CONFIG_CAP_INSTANCE_HOST`        | Optional, Cap captcha instance host                                                |
+| `CONFIG_CAP_SITE_KEY`             | Optional, Cap captcha site key                                                     |
+| `CONFIG_CAP_SECRET_KEY`           | Optional, Cap captcha secret key                                                   |
 | `CONFIG_MAIL_ALERT_WEBHOOK_URL`   | Optional, webhook (e.g. Discord) alerted when an email fails to send             |
 
 #### Email
@@ -188,8 +188,7 @@ The single record in the `leihbase` collection contains instance-wide settings:
 - `footer_links`: links shown in the footer, in the same JSON format as location
   [links](#links)
 - `currency`: currency of deposits on the website and in emails, as an ISO 4217
-  code such as `EUR` (the default when empty), `GBP` or `CHF`. With `GBP` and
-  English, dates are shown the British way (`16/11/26`, `16 Nov 2026`)
+  code such as `EUR` (the default when empty), `GBP` or `CHF`
 - `borrow_agreement`: borrowing terms of all locations without borrowing terms
   of their own, edited in the admin section (Instance settings, see
   [Borrowing terms](#borrowing-terms))
