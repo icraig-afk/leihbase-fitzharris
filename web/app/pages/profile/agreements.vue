@@ -24,7 +24,7 @@
                 date: formatDate(
                   item.agreement.updated,
                   "DD MMM YYYY",
-                  dateLocale
+                  formatLocale
                 ),
               })
             }}
@@ -77,7 +77,7 @@ import Heading from "@/components/core/Heading.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 
 const { t } = useI18n({ useScope: "local" });
-const dateLocale = useDateLocale();
+const formatLocale = useFormatLocale();
 const route = useRoute();
 const { pb, isValid, logout } = usePocketbase();
 const userStore = useUserStore();

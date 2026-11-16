@@ -112,7 +112,7 @@ type Delivery = {
 };
 
 const { t } = useI18n({ useScope: "local" });
-const dateLocale = useDateLocale();
+const formatLocale = useFormatLocale();
 const route = useRoute();
 const { pb } = usePocketbase();
 
@@ -149,12 +149,12 @@ const needed = computed(() =>
         from: formatDate(
           request.value.needed_from,
           "DD.MM.YYYY",
-          dateLocale.value
+          formatLocale.value
         ),
         until: formatDate(
           request.value.needed_until,
           "DD.MM.YYYY",
-          dateLocale.value
+          formatLocale.value
         ),
       })
     : ""

@@ -93,7 +93,7 @@ services:
 | `CONFIG_CAP_INSTANCE_HOST`        | Optional, Cap captcha instance host                                                |
 | `CONFIG_CAP_SITE_KEY`             | Optional, Cap captcha site key                                                     |
 | `CONFIG_CAP_SECRET_KEY`           | Optional, Cap captcha secret key                                                   |
-| `CONFIG_MAIL_ALERT_WEBHOOK_URL`   | Optional, webhook (e.g. Discord) alerted when an email fails to send             |
+| `CONFIG_MAIL_ALERT_WEBHOOK_URL`   | Optional, webhook (e.g. Discord) alerted when an email fails to send               |
 
 #### Email
 

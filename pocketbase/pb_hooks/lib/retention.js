@@ -196,27 +196,26 @@ function sendWarning(user, closingDate) {
   const settings = $app.settings();
   const loginUrl = `${settings.meta.appURL}/login`;
   const date = closingDate.toLocaleDateString(
-    locale === "de" ? "de-DE" : "en-GB",
+    locale.startsWith("de") ? "de-DE" : "en-GB",
     { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }
   );
   const name = String(user.getString("name") || "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
-  const text =
-    locale === "de"
-      ? {
-          subject: `Dein Konto bei ${settings.meta.appName} wird geschlossen`,
-          html: `<p>Hallo ${name},</p>
+  const text = locale.startsWith("de")
+    ? {
+        subject: `Dein Konto bei ${settings.meta.appName} wird geschlossen`,
+        html: `<p>Hallo ${name},</p>
 <p>du hast dein Konto bei ${settings.meta.appName} lange nicht genutzt. Wie in unserer Datenschutzerklärung beschrieben, schließen wir es am ${date} und löschen deine persönlichen Daten.</p>
 <p>Wenn du dein Konto behalten möchtest, <a href="${loginUrl}">melde dich einfach vorher an</a>.</p>`,
-        }
-      : {
-          subject: `Your ${settings.meta.appName} account will be closed`,
-          html: `<p>Hi ${name},</p>
+      }
+    : {
+        subject: `Your ${settings.meta.appName} account will be closed`,
+        html: `<p>Hi ${name},</p>
 <p>you haven't used your ${settings.meta.appName} account for a long time. As described in our privacy policy, we'll close it on ${date} and remove your personal data.</p>
 <p>If you'd like to keep your account, just <a href="${loginUrl}">log in</a> before then.</p>`,
-        };
+      };
   $app.newMailClient().send(
     new MailerMessage({
       from: {

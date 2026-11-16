@@ -219,7 +219,7 @@ function formatNeeded(request, locale) {
   const until = /** @type {Date} */ (
     parseDate(request.getString("needed_until"))
   );
-  return locale === "de"
+  return locale.startsWith("de")
     ? `${formatDate(from, locale)} bis ${formatDate(until, locale)}`
     : `${formatDate(from, locale)} to ${formatDate(until, locale)}`;
 }
@@ -253,24 +253,23 @@ function sendRequestEmail(request, recipient, token) {
   const no = `${link("/requests/respond")}&answer=no`;
   const unsubscribe = link("/requests/unsubscribe");
 
-  const text =
-    locale === "de"
-      ? {
-          subject: `${name} fragt: ${shortDescription}`,
-          intro: `${escapeHtml(name)} aus der Nachbarschaft fragt, ob jemand Folgendes hat:`,
-          needed: `Gebraucht: ${formatNeeded(request, locale)}`,
-          yes: "Ja, ich kann helfen",
-          no: "Nein",
-          footer: `Du bekommst diese E-Mail, weil du an den Anfragen der Nachbarschaft teilnimmst. <a href="${unsubscribe}">Keine Anfragen mehr bekommen</a>.`,
-        }
-      : {
-          subject: `${name} asks: ${shortDescription}`,
-          intro: `${escapeHtml(name)}, a neighbour, asks if anyone has:`,
-          needed: `Needed: ${formatNeeded(request, locale)}`,
-          yes: "Yes, I can help",
-          no: "No",
-          footer: `You get this email because you take part in neighbours' requests. <a href="${unsubscribe}">Stop these emails</a>.`,
-        };
+  const text = locale.startsWith("de")
+    ? {
+        subject: `${name} fragt: ${shortDescription}`,
+        intro: `${escapeHtml(name)} aus der Nachbarschaft fragt, ob jemand Folgendes hat:`,
+        needed: `Gebraucht: ${formatNeeded(request, locale)}`,
+        yes: "Ja, ich kann helfen",
+        no: "Nein",
+        footer: `Du bekommst diese E-Mail, weil du an den Anfragen der Nachbarschaft teilnimmst. <a href="${unsubscribe}">Keine Anfragen mehr bekommen</a>.`,
+      }
+    : {
+        subject: `${name} asks: ${shortDescription}`,
+        intro: `${escapeHtml(name)}, a neighbour, asks if anyone has:`,
+        needed: `Needed: ${formatNeeded(request, locale)}`,
+        yes: "Yes, I can help",
+        no: "No",
+        footer: `You get this email because you take part in neighbours' requests. <a href="${unsubscribe}">Stop these emails</a>.`,
+      };
 
   $app.newMailClient().send(
     new MailerMessage({
@@ -389,22 +388,21 @@ function sendYesEmail(request, response) {
   const email = escapeHtml(response.getString("responder_email"));
   const note = response.getString("note");
   const description = escapeHtml(request.getString("description"));
-  const text =
-    locale === "de"
-      ? {
-          subject: `${response.getString("responder_name")} kann dir helfen`,
-          intro: `Gute Nachricht: <strong>${helper}</strong> kann dir bei deiner Anfrage helfen:`,
-          contact: `Schreib einfach eine Antwort auf diese E-Mail, oder an <a href="mailto:${email}">${email}</a>, um es zu vereinbaren.`,
-          note: "Nachricht:",
-          link: "Alle Antworten ansehen",
-        }
-      : {
-          subject: `${response.getString("responder_name")} can help`,
-          intro: `Good news: <strong>${helper}</strong> can help with your request:`,
-          contact: `Just reply to this email, or write to <a href="mailto:${email}">${email}</a>, to arrange it.`,
-          note: "Their note:",
-          link: "See all answers",
-        };
+  const text = locale.startsWith("de")
+    ? {
+        subject: `${response.getString("responder_name")} kann dir helfen`,
+        intro: `Gute Nachricht: <strong>${helper}</strong> kann dir bei deiner Anfrage helfen:`,
+        contact: `Schreib einfach eine Antwort auf diese E-Mail, oder an <a href="mailto:${email}">${email}</a>, um es zu vereinbaren.`,
+        note: "Nachricht:",
+        link: "Alle Antworten ansehen",
+      }
+    : {
+        subject: `${response.getString("responder_name")} can help`,
+        intro: `Good news: <strong>${helper}</strong> can help with your request:`,
+        contact: `Just reply to this email, or write to <a href="mailto:${email}">${email}</a>, to arrange it.`,
+        note: "Their note:",
+        link: "See all answers",
+      };
   $app.newMailClient().send(
     new MailerMessage({
       from: sender(),
