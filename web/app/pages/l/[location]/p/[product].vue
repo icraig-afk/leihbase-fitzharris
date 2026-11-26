@@ -90,6 +90,7 @@
 </template>
 
 <script lang="ts" setup>
+import { getLanguage } from "@@/lib/locale";
 import { isToday } from "@@/lib/reservation";
 import AvailabilityBadge from "@/components/AvailabilityBadge.vue";
 import type { BreadcrumbList } from "@/components/core/Breadcrumb.model";
@@ -147,7 +148,7 @@ const { reservations, refresh: refreshReservations } =
 const breadcrumb = computed<BreadcrumbList[]>(() => [
   { label: location.value?.name, href: `/l/${location.value?.slug}` },
   (product.value?.expand?.categories ?? []).map((category: RecordModel) => ({
-    label: category[`name_${locale.value}`] || category.name_de,
+    label: category[`name_${getLanguage(locale.value)}`] || category.name_de,
     href: `/l/${location.value?.slug}?category=${category.id}`,
   })),
 ]);

@@ -21,11 +21,7 @@
           <p class="updated">
             {{
               t("updated", {
-                date: formatDate(
-                  item.agreement.updated,
-                  "DD MMM YYYY",
-                  formatLocale
-                ),
+                date: formatDate(item.agreement.updated, "DD MMM YYYY", locale),
               })
             }}
           </p>
@@ -76,8 +72,7 @@ import Container from "@/components/core/Container.vue";
 import Heading from "@/components/core/Heading.vue";
 import PageAlert from "@/components/page-alert/PageAlert.vue";
 
-const { t } = useI18n({ useScope: "local" });
-const formatLocale = useFormatLocale();
+const { t, locale } = useI18n({ useScope: "local" });
 const route = useRoute();
 const { pb, isValid, logout } = usePocketbase();
 const userStore = useUserStore();

@@ -146,8 +146,7 @@ type Letter = Omit<PendingUser, "id" | "email" | "created" | "code_issued"> & {
   expires: string;
 };
 
-const { t } = useI18n({ useScope: "local" });
-const formatLocale = useFormatLocale();
+const { t, locale } = useI18n({ useScope: "local" });
 const { pb, isValid } = usePocketbase();
 const { leihbase } = useLeihbase();
 const userStore = useUserStore();
@@ -195,14 +194,11 @@ const verifyUrl = computed(() =>
 
 function formatDate(value: string) {
   if (!value) return "";
-  return new Date(value.replace(" ", "T")).toLocaleDateString(
-    formatLocale.value,
-    {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }
-  );
+  return new Date(value.replace(" ", "T")).toLocaleDateString(locale.value, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 }
 
 function formatAddress(item: PendingUser) {

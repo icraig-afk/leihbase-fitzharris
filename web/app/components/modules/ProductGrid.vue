@@ -74,6 +74,7 @@
 </template>
 
 <script lang="ts" setup>
+import { getLanguage } from "@@/lib/locale";
 import { ArrowLeft, ArrowRight, NavArrowDown } from "@iconoir/vue";
 import type { Location } from "~~/models/location";
 import type { RecordModel } from "pocketbase";
@@ -118,7 +119,7 @@ const cacheKey = props.location?.id ?? "all";
  * Returns the category name in the current locale, falling back to German
  */
 function getCategoryName(category: RecordModel): string {
-  return category[`name_${locale.value}`] || category.name_de;
+  return category[`name_${getLanguage(locale.value)}`] || category.name_de;
 }
 
 /**
@@ -170,12 +171,10 @@ watch(
   }
 );
 
-const { data: categories } = await useAsyncData(
-  `categories-${cacheKey}`,
-  () =>
-    pb.collection("categories").getFullList({
-      sort: locale.value === "en" ? "name_en" : "name_de",
-    })
+const { data: categories } = await useAsyncData(`categories-${cacheKey}`, () =>
+  pb.collection("categories").getFullList({
+    sort: getLanguage(locale.value) === "en" ? "name_en" : "name_de",
+  })
 );
 
 const { data: productsData, refresh: refreshProducts } = await useAsyncData(

@@ -1,10 +1,12 @@
+import { getLanguage } from "./locale";
+
 /**
  * Fork-only: a number of days in words, for the retention periods in the
  * privacy policy: "2 years" for whole years, else "30 days". `null` or 0 is
  * "not set".
  */
 export function formatPeriod(days: number | null | undefined, locale: string) {
-  const de = locale === "de";
+  const de = getLanguage(locale) === "de";
   if (!days || days <= 0) {
     return de ? "nicht festgelegt" : "not set";
   }

@@ -147,7 +147,9 @@ function notifyAdminsOfNewNeighbour(user) {
     return;
   }
 
-  const locale = $os.getenv("CONFIG_LOCALE") || "en";
+  /** @type {typeof import('./locale')} */
+  const { getLocale, getLanguage } = require(`${__hooks}/lib/locale`);
+  const locale = getLocale();
   const settings = $app.settings();
   const address = getAddress(user);
   const addressLine = escapeHtml(
@@ -159,19 +161,20 @@ function notifyAdminsOfNewNeighbour(user) {
   const email = escapeHtml(user.getString("email"));
   const link = `${settings.meta.appURL}/admin/neighbours`;
 
-  const text = locale.startsWith("de")
-    ? {
-        subject: `Neue Nachbar:in braucht einen Code: ${user.getString("name")}`,
-        intro:
-          "Jemand hat sich neu registriert und braucht einen Brief mit Code, um reservieren zu können.",
-        action: "Brief erstellen und drucken",
-      }
-    : {
-        subject: `New neighbour needs a code: ${user.getString("name")}`,
-        intro:
-          "Someone new has signed up and needs a letter with their code before they can reserve.",
-        action: "Create and print the letter",
-      };
+  const text =
+    getLanguage(locale) === "de"
+      ? {
+          subject: `Neue Nachbar:in braucht einen Code: ${user.getString("name")}`,
+          intro:
+            "Jemand hat sich neu registriert und braucht einen Brief mit Code, um reservieren zu können.",
+          action: "Brief erstellen und drucken",
+        }
+      : {
+          subject: `New neighbour needs a code: ${user.getString("name")}`,
+          intro:
+            "Someone new has signed up and needs a letter with their code before they can reserve.",
+          action: "Create and print the letter",
+        };
 
   const message = new MailerMessage({
     from: {

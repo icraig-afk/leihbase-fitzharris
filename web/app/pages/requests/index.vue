@@ -189,8 +189,7 @@ import type {
   CommunityRequestResponse,
 } from "~~/models/communityRequest";
 
-const { t } = useI18n({ useScope: "local" });
-const formatLocale = useFormatLocale();
+const { t, locale } = useI18n({ useScope: "local" });
 const route = useRoute();
 const { pb, isValid, user } = usePocketbase();
 const { isEnabled, isEmailVerified, canTakePart } = useCommunityRequests();
@@ -255,8 +254,8 @@ function responsesOf(request: CommunityRequest) {
 
 function needed(request: CommunityRequest) {
   return t("needed", {
-    from: formatDate(request.needed_from, "DD.MM.YYYY", formatLocale.value),
-    until: formatDate(request.needed_until, "DD.MM.YYYY", formatLocale.value),
+    from: formatDate(request.needed_from, "DD.MM.YYYY", locale.value),
+    until: formatDate(request.needed_until, "DD.MM.YYYY", locale.value),
   });
 }
 
