@@ -14,13 +14,9 @@ and this project adheres to
 - **Currency setting:** the currency of deposits can be set with the `currency`
   field on the `leihbase` record, as an ISO 4217 code such as `GBP` or `USD`
   (defaults to `EUR`).
-- **Locales with a region:** `NUXT_PUBLIC_LOCALE` and `CONFIG_LOCALE` can have a
-  region, such as `en-GB` or `de-AT`. Texts use the language, and dates follow
-  the region, on the website and in emails: `16/11/2026` for `en-GB` instead of
-  `11/16/2026`. Dates in emails now have leading zeros: `05.01.2026` instead of
-  `5.1.2026`. English emails without a region show dates like the website:
-  `11/16/2026` instead of `16/11/2026`, set `CONFIG_LOCALE` to `en-GB` to keep
-  the day first.
+- **Locales with a region:** `NUXT_PUBLIC_LOCALE` and `CONFIG_LOCALE` now
+  support a region, such as 'en-GB' or 'de-AT'. Texts use only the language for
+  now, dates are formatted for the region.
 
 ### Fixed
 
@@ -28,6 +24,10 @@ and this project adheres to
   emails.
 - The reservation details dialog on the reservations page is titled in the
   user's language, instead of always "Reservierung".
+- English without a region (en) now uses US date formatting in both the web app
+  and emails.
+- An unsupported `CONFIG_LOCALE`, such as 'fr', falls back to English, instead
+  of sending emails without text.
 
 ## [2.7.0] - 2026-11-12
 
