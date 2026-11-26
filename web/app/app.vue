@@ -37,7 +37,7 @@ const userStore = useUserStore();
 const {
   public: { plausibleTrackingDomain },
 } = useRuntimeConfig();
-const formatLocale = useFormatLocale();
+const { locale } = useI18n();
 
 // Fetch Leihbase collection on a central location
 // await for the result before processing the rest of the page
@@ -64,7 +64,7 @@ useHead({
   ],
   style,
   htmlAttrs: {
-    lang: formatLocale,
+    lang: locale,
   },
 });
 
